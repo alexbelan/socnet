@@ -48,7 +48,7 @@ class UserData(models.Model):
         ('2', 'Женьшина'),
     )
     id = models.AutoField(primary_key=True, unique=True)
-    avatar = models.ImageField(upload_to='avatar/<int:pk>')
+    avatar = models.ImageField(upload_to='avatar/')
     first_name = models.CharField(max_length=50, unique=False, default='')
     last_name = models.CharField(max_length=50, unique=False, default='')
     gender = models.CharField(max_length=1, choices=GENDER, default='')

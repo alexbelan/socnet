@@ -27,7 +27,6 @@ class UserRegistrSerializer(serializers.ModelSerializer):
 
 
 class UserMainDataSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = ['email', 'username']
@@ -40,8 +39,19 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserData
         fields = '__all__'
 
-class UserProfileSettingSerializer(serializers.ModelSerializer):
 
+class UserProfileSettingSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
-        fields = ['first_name', 'last_name', 'gender', 'about_myself', 'status', 'year_of_birth']
+        fields = ['avatar', 'first_name', 'last_name', 'about_myself', 'gender', 'status', 'year_of_birth', ]
+
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.first_name)
+        instance.avatar = validated_data.get('avatar', instance.avatar)
+        instance.about_myself = validated_data.get('about_myself', instance.about_myself)
+        instance.gender = validated_data.get('gender', instance.gender)
+        instance.status = validated_data.get('status', instance.status)
+        instance.year_of_birth= validated_data.get('year_of_birth', instance.year_of_birth)
+        instance.save()
+        return instance
