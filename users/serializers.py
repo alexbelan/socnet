@@ -52,6 +52,6 @@ class UserProfileSettingSerializer(serializers.ModelSerializer):
         instance.about_myself = validated_data.get('about_myself', instance.about_myself)
         instance.gender = validated_data.get('gender', instance.gender)
         instance.status = validated_data.get('status', instance.status)
-        instance.year_of_birth= validated_data.get('year_of_birth', instance.year_of_birth)
+        # instance.year_of_birth = validated_data.get('year_of_birth', instance.year_of_birth)
         instance.save()
         return instance

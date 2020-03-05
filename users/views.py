@@ -1,5 +1,6 @@
 import request as request
 from rest_framework import status
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.exceptions import NotAuthenticated
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, UpdateAPIView, \
@@ -21,23 +22,45 @@ class RegistrUserView(CreateAPIView):
         serializer = UserRegistrSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            user = serializer.save()
-            data['response'] = 'Ошибок нет'
-            data['email'] = user.email
-            data['username'] = user.username
+            serializer.save()
+            data['response'] = True
+            # data['email'] = user.email
+            # data['username'] = user.username
             return Response(data, status=status.HTTP_200_OK)
         else:
             data = serializer.errors
             return Response(data)
 
 
-class HelloUserView(APIView):
-    queryset = UserData.objects.all()
-    permission_classes = [AllowAny]
+class CheckUserView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk):
-        content = {'user': request.user.id}
+    def get(self, request):
+        content = {'Authenticated': True}
         return Response(content)
+
+
+class HomeUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = User.objects.get(id=request.user.id)
+        user_data = user.user_data
+        data = {
+            'id': request.user.id,
+            'username': request.user.username,
+            'email': request.user.email,
+            'first_name': user_data.first_name,
+            'last_name': user_data.last_name,
+            'about_myself': user_data.about_myself,
+            'gender': user_data.gender,
+            'status': user_data.status,
+            'year_of_birth': user_data.year_of_birth,
+        }
+        return Response(data)
+
+    # def post (self, request):
+    #     return Response({'user': request.user.id})
 
 
 class UserSettingView(UpdateAPIView):
@@ -55,7 +78,7 @@ class UserSettingView(UpdateAPIView):
             'about_myself': user_data.about_myself,
             'gender': user_data.gender,
             'status': user_data.status,
-            'year_of_birth': user_data.year_of_birth
+            # 'year_of_birth': user_data.year_of_birth
         }
         return Response(data)
 
