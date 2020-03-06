@@ -1,9 +1,7 @@
 import request as request
 from rest_framework import status
-from rest_framework.authentication import BasicAuthentication
-from rest_framework.exceptions import NotAuthenticated
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, UpdateAPIView, \
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, \
     get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
@@ -40,14 +38,34 @@ class CheckUserView(APIView):
         return Response(content)
 
 
-class HomeUserView(APIView):
+class UserView(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [AllowAny]
+
+    # def get(self, request, pk, *args, **kwargs):
+    #     serializer = UserProfileSerializer(request)
+    #     user_data = UserData.objects.get(id=queryset.user_data)
+    #     # data = {
+    #     #     'username': serializer.username,
+    #     #     'email': serializer.email,
+    #     #     'first_name': user_data.first_name,
+    #     #     'last_name': user_data.last_name,
+    #     #     'about_myself': user_data.about_myself,
+    #     #     'gender': user_data.gender,
+    #     #     'status': user_data.status,
+    #     #     'year_of_birth': user_data.year_of_birth,
+    #     # }
+    #     return Response(data)
+
+
+class HomeUserView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = User.objects.get(id=request.user.id)
         user_data = user.user_data
         data = {
-            'id': request.user.id,
             'username': request.user.username,
             'email': request.user.email,
             'first_name': user_data.first_name,

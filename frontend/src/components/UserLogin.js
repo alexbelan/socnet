@@ -4,7 +4,6 @@ import { Form, FormGroup, Input, Label } from "reactstrap";
 import axios from "axios";
 
 import { API_URL } from "../constants";
-import { axiosInstance } from "../constants";
 
 class UserLogin extends React.Component {
     state = {

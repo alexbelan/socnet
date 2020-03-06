@@ -1,13 +1,8 @@
 import React, { Component } from "react";
 import { Form, FormGroup, Input, Label } from "reactstrap";
-import Select from 'react-select';
 import axios from "axios";
 
 import {API_URL} from "../constants";
-// import { axiosInstance } from "../constants";
-import * as AxiosAPI from "./AxiosAPI"
-import Axios from "axios";
-// import Axios from "axios";
 
 console.log(localStorage.getItem('access_token'))
 

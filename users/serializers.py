@@ -27,17 +27,18 @@ class UserRegistrSerializer(serializers.ModelSerializer):
 
 
 class UserMainDataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['email', 'username']
-
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    user = UserMainDataSerializer(read_only=True)
 
     class Meta:
         model = UserData
-        fields = '__all__'
+        fields = ['first_name', 'last_name', 'about_myself', 'gender', 'status']
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    user_data = UserMainDataSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'username', 'user_data']
 
 
 class UserProfileSettingSerializer(serializers.ModelSerializer):
