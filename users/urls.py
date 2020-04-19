@@ -12,5 +12,4 @@ urlpatterns = [
     path('check/', CheckUserView.as_view(), name='checkuser'),
     path('<int:pk>/', UserView.as_view(), name='user'),
     path('', HomeUserView.as_view(), name='home'),
-
 ]
