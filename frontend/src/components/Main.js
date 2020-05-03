@@ -5,6 +5,8 @@ import Home from './Home';
 import UserLogin from './UserLogin';
 import UserSetting from './UserSetting';
 import UserProfile from './UserProfile';
+import ChatsView from './ChatsView';
+import Chat from './Chat';
 
 const Main = () => (
       <main>
@@ -14,6 +16,8 @@ const Main = () => (
         <Route path='/login' component={UserLogin}/>
         <Route path='/setting' component={UserSetting}/>
         <Route path='/user/:slug/' component={UserProfile}/>
+        <Route path='/chats' component={ChatsView}/>
+        <Route path='/chat/:slug/' component={Chat}/>
       </Switch>
       </main>
   )

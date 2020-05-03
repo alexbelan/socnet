@@ -21,9 +21,14 @@ class Header extends Component {
                         <Link className="nav-link" to="/">Home</Link>
                     </li>
                     { localStorage.getItem('access_token') &&
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/setting">Setting</Link>
-                        </li>
+                        <>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/chats">Chat</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/setting">Setting</Link>
+                            </li>
+                        </>
                     }
                 </ul>
                 { !localStorage.getItem('access_token') &&

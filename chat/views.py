@@ -1,13 +1,17 @@
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from django.http import JsonResponse
 import request as request
 
+from chat.pagination import MessagesPageNumber
+from users.models import User
 from .models import Chat, Message
-from .serializers import NewChatSerializers, ShowChatsSerializers, SendMessageSerializers, ListMessageSerializers
+from .serializers import NewChatSerializers, ShowChatsSerializers, SendMessageSerializers, ListMessageSerializers, \
+    GetUserDataForChat
 
 
 class NewChatView(APIView):
@@ -56,16 +60,30 @@ class SendMessageView(CreateAPIView):
             return Response(data)
 
 
-class listMessageView(ListAPIView):
+class ListMessageView(ListAPIView):
     queryset = Message.objects.all()
     serializer_class = ListMessageSerializers
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
-        serializer = ListMessageSerializers(request)
-        msgs = serializer.list(request, pk=pk)
+        chat = Chat.objects.get(pk=pk)
+        queryset = Message.objects.filter(chat=chat).order_by('id')
+        paginator = MessagesPageNumber()
+        page = paginator.paginate_queryset(queryset, request)
+        serializer = ListMessageSerializers(page, many=True)
         data = {
-            "response": list(msgs)
+            'msgs': paginator.get_paginated(serializer.data),
+            'user': chat.users.all().exclude(id=request.user.id).values('id', 'username')
         }
         return Response(data)
 
+
+class GetUserData(RetrieveAPIView):
+    # queryset = User.objects.all()
+    serializer_class = GetUserDataForChat
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        queryset = User.objects.get(id=request.user.id)
+        serializer = GetUserDataForChat(queryset)
+        return Response(serializer.data)

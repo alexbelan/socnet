@@ -49,12 +49,12 @@ class UserData(models.Model):
     )
     id = models.AutoField(primary_key=True, unique=True)
     avatar = models.ImageField(upload_to='avatar/')
-    first_name = models.CharField(max_length=50, unique=False, default='')
-    last_name = models.CharField(max_length=50, unique=False, default='')
-    gender = models.CharField(max_length=1, choices=GENDER, default='')
-    about_myself = models.CharField(max_length=255, default='')
-    status = models.CharField(max_length=1, choices=STATUS, default='')
-    year_of_birth = models.DateField(default=datetime.date(2000, 4, 15))
+    first_name = models.CharField(max_length=50, unique=False, default='', blank=True, null=True)
+    last_name = models.CharField(max_length=50, unique=False, default='', blank=True, null=True)
+    gender = models.CharField(max_length=1, choices=GENDER, default='', blank=True, null=True)
+    about_myself = models.CharField(max_length=255, default='', blank=True, null=True)
+    status = models.CharField(max_length=1, choices=STATUS, default='', blank=True, null=True)
+    year_of_birth = models.DateField(default=datetime.date(2000, 4, 15), blank=True, null=True)
     friends = jsonfield.JSONField()
 
 

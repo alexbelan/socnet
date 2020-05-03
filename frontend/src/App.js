@@ -12,14 +12,8 @@ import {BrowserRouter as Router} from 'react-router-dom'
 
 export default class App extends Component {
 
-  authenticated () {
-      axios.defaults.headers.common['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
-      AxiosAPI.refreshJWT()
-      axios.get(API_URL + 'user/check/')
-  }
-
   componentDidMount() {
-      this.authenticated();
+      AxiosAPI.refreshJWT()
   };  
 
   render(h) {

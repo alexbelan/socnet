@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from .models import Chat, Message
+from  users.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from users.models import User
 
@@ -35,7 +37,16 @@ class ShowChatsSerializers(serializers.ModelSerializer):
 
     def list(self, request, *args, **kwargs):
         user_id = request.user.id
-        return Chat.objects.filter(users=user_id).values_list('id', flat=True)
+        chats_res = dict()
+        chats = Chat.objects.filter(users__id=user_id).values_list('id', flat=True)
+        for chat_id in chats:
+            chat = Chat.objects.get(id=chat_id)
+            chat_data_user = chat.users.exclude(id=user_id)
+            chats_res[chat_id] = {
+                'user_id': chat_data_user.get().id,
+                'username': chat_data_user.get().username,
+            }
+        return chats_res
 
 
 class SendMessageSerializers(serializers.ModelSerializer):
@@ -56,19 +67,25 @@ class SendMessageSerializers(serializers.ModelSerializer):
         return Message.objects.create(user=user, chat=chat, text=text)
 
 
+class UserNameSerializers(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = '__all__'
+
+
 class ListMessageSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ['pk_field']
-
-    def list(self, request, pk, *args, **kwargs):
-        chat = Chat.objects.get(pk=pk)
-        return Message.objects.filter(chat=chat).values()
+        fields = ['id', 'text', 'user', 'date']
 
 
-# class LastMessageSerializers():
+class GetUserDataForChat(serializers.ModelSerializer):
 
+    class Meta:
+        model = User
+        fields = ['id', 'username']
 
 
 

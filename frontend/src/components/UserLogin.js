@@ -69,6 +69,7 @@ class UserLogin extends React.Component {
           <Input 
           type="submit"
           name="doGo"
+          value="Войти"
           />
 
         </Form>

@@ -64,6 +64,7 @@ class HomeUserView(RetrieveAPIView):
         user = User.objects.get(id=request.user.id)
         user_data = user.user_data
         data = {
+            'id': request.user.id,
             'username': request.user.username,
             'email': request.user.email,
             'first_name': user_data.first_name,

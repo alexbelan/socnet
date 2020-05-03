@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import axios from "axios";
-import ReactDOM from "react-dom";
-import {useParams} from "react-router-dom";
 
 import { API_URL } from "../constants";
 
@@ -59,7 +57,6 @@ class userProfile extends Component {
 
     componentDidMount() {
         let slug  = this.props.match.params
-        console.log(slug)
         axios.get(API_URL + 'user/' + slug.slug + '/').then(res => {
             this.setState(res.data)
         })
