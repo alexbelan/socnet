@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import PageNumberPagination, CursorPagination, LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from django.http import JsonResponse
 import request as request
 
-from chat.pagination import MessagesPageNumber
+from chat.pagination import MessagesPagination
 from users.models import User
 from .models import Chat, Message
 from .serializers import NewChatSerializers, ShowChatsSerializers, SendMessageSerializers, ListMessageSerializers, \
@@ -53,7 +53,12 @@ class SendMessageView(CreateAPIView):
         data = {}
         if serializer.is_valid():
             msg = serializer.save()
-            data['response'] = msg.id
+            data = {
+                "id": msg.id,
+                "date": msg.date,
+                "user": msg.user.id,
+                "text": msg.text,
+            }
             return Response(data, status=status.HTTP_200_OK)
         else:
             data = serializer.errors
@@ -67,8 +72,8 @@ class ListMessageView(ListAPIView):
 
     def get(self, request, pk):
         chat = Chat.objects.get(pk=pk)
-        queryset = Message.objects.filter(chat=chat).order_by('id')
-        paginator = MessagesPageNumber()
+        queryset = Message.objects.filter(chat=chat).order_by('-id')
+        paginator = MessagesPagination()
         page = paginator.paginate_queryset(queryset, request)
         serializer = ListMessageSerializers(page, many=True)
         data = {

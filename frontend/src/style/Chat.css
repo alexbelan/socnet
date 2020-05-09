@@ -1,0 +1,30 @@
+.chat {
+    margin: 0 auto;
+    height: calc(100vh - 56px);
+    width: 80vw;
+    overflow-y: auto;
+    overflow-x: none;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+}
+
+.msgs {
+    height: calc((100vh - 56px) - 50px);
+    overflow-y: scroll;
+}
+
+.sendMsg {
+    /* display: flex !important ; */
+    height: 50px;
+    width: 70vw;
+    margin: auto !important;
+    padding: 6px 0;
+}
+
+.sendMsg button {
+
+}
+
+.card {
+    border-radius: 0 !important;
+}

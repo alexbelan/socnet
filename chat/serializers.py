@@ -78,7 +78,7 @@ class ListMessageSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ['id', 'text', 'user', 'date']
+        fields = ['text', 'user']
 
 
 class GetUserDataForChat(serializers.ModelSerializer):
