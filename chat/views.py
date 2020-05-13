@@ -1,16 +1,13 @@
 from rest_framework import status
-from rest_framework.pagination import PageNumberPagination, CursorPagination, LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from django.http import JsonResponse
-import request as request
 
 from chat.pagination import MessagesPagination
 from users.models import User
 from .models import Chat, Message
-from .serializers import NewChatSerializers, ShowChatsSerializers, SendMessageSerializers, ListMessageSerializers, \
+from chat.serializers import NewChatSerializers, ShowChatsSerializers, SendMessageSerializers, ListMessageSerializers, \
     GetUserDataForChat
 
 

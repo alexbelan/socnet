@@ -20,6 +20,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('users.urls', 'user_view')),
     path('chat/', include('chat.urls', 'chat_view')),
+    path('groups/', include('groups.urls', 'group_view')),
 
     path('api-auth', include('rest_framework.urls')),
     path('auth/', include('djoser.urls')),

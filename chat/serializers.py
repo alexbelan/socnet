@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from .models import Chat, Message
-from  users.models import User
+from chat.models import Chat, Message
 from django.core.exceptions import ObjectDoesNotExist
 from users.models import User
 

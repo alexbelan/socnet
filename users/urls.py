@@ -1,8 +1,5 @@
-from django.conf.urls import url
-from django.urls import path, include
 from .views import RegistrUserView, UserSettingView, HomeUserView, CheckUserView, UserView
 from django.urls import path
-from rest_framework_simplejwt import views as jwt_views
 
 app_name = 'users'
 
