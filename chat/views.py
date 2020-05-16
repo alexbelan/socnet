@@ -7,8 +7,7 @@ from rest_framework.views import APIView
 from chat.pagination import MessagesPagination
 from users.models import User
 from .models import Chat, Message
-from chat.serializers import NewChatSerializers, ShowChatsSerializers, SendMessageSerializers, ListMessageSerializers, \
-    GetUserDataForChat
+from chat.serializers import NewChatSerializers, ShowChatsSerializers, ListMessageSerializers, GetUserDataForChat
 
 
 class NewChatView(APIView):
@@ -39,27 +38,6 @@ class ChatsShowView(ListAPIView):
             "response": chats
         }
         return Response(data)
-
-
-class SendMessageView(CreateAPIView):
-    serializer_class = SendMessageSerializers
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        serializer = SendMessageSerializers(data=request.data)
-        data = {}
-        if serializer.is_valid():
-            msg = serializer.save()
-            data = {
-                "id": msg.id,
-                "date": msg.date,
-                "user": msg.user.id,
-                "text": msg.text,
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        else:
-            data = serializer.errors
-            return Response(data)
 
 
 class ListMessageView(ListAPIView):

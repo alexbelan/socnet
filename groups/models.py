@@ -8,3 +8,14 @@ class Groups(models.Model):
     image = models.ImageField()
     subscribers = models.ManyToManyField(User, related_name='subscribers')
     admins = models.ManyToManyField(User, related_name='admins')
+
+
+class Posts(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    text = models.TextField(blank=True, null=True)
+    image = models.ImageField(blank=True, null=True)
+    group = models.ForeignKey(Groups, on_delete=models.DO_NOTHING)
+    author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    reposts = models.ManyToManyField(User, related_name='reposts')
+    likes = models.ManyToManyField(User, related_name='likes')
+    # time = models.DateTimeField()
