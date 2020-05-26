@@ -7,6 +7,8 @@ import UserSetting from './UserSetting';
 import UserProfile from './UserProfile';
 import ChatsView from './ChatsView';
 import Chat from './Chat';
+import SubView from './SubView'
+import GroupView from './GroupView'
 
 const Main = () => (
       <main>
@@ -18,6 +20,8 @@ const Main = () => (
         <Route path='/user/:slug/' component={UserProfile}/>
         <Route path='/chats' component={ChatsView}/>
         <Route path='/chat/:slug/' component={Chat}/>
+        <Route path='/groups/' component={SubView}/>
+        <Route path='/group/:slug/' component={GroupView}/>
       </Switch>
       </main>
   )

@@ -2,12 +2,13 @@ import request as request
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, \
-    get_object_or_404
+    get_object_or_404, ListAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 
-from .models import User, UserData
-from .serializers import UserRegistrSerializer, UserProfileSerializer, UserProfileSettingSerializer
+from .models import User, UserData, Friends
+from .serializers import UserRegistrSerializer, UserProfileSerializer, UserProfileSettingSerializer, \
+    FriendsShowSerializer, FriendsRequestSerializer, FriendsWorkSerializer
 
 
 # Create your views here.
@@ -63,6 +64,7 @@ class HomeUserView(RetrieveAPIView):
     def get(self, request):
         user = User.objects.get(id=request.user.id)
         user_data = user.user_data
+        friends = Friends.objects.get(user=request.user.id)
         data = {
             'id': request.user.id,
             'username': request.user.username,
@@ -73,6 +75,8 @@ class HomeUserView(RetrieveAPIView):
             'gender': user_data.gender,
             'status': user_data.status,
             'year_of_birth': user_data.year_of_birth,
+            'freands': len(friends.friends.all()),
+            'request_freands': len(friends.request_friends.all())
         }
         return Response(data)
 
@@ -118,3 +122,55 @@ class UserSettingView(UpdateAPIView):
         else:
             data = serializer.errors
         return Response(data)
+
+
+class ShowFriendsView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FriendsShowSerializer
+
+    def get(self, request, *args, **kwargs):
+        serializer = FriendsShowSerializer()
+        res = serializer.list(request.user.id)
+        return Response(res.values('id', 'username'))
+
+
+class ShowRequestFriendsView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FriendsRequestSerializer
+
+    def get(self, request, *args, **kwargs):
+        serializer = FriendsRequestSerializer()
+        res = serializer.list(request.user.id)
+        return Response(res.values('id', 'username'))
+
+
+class RejectRequestFriendView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FriendsWorkSerializer
+
+    def post(self, request):
+        serializer = FriendsWorkSerializer(data=request.data)
+        res = serializer.reject_request_friend(request.data, request.user.id)
+        return Response(res)
+
+
+class AcceptRequestFriendView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FriendsWorkSerializer
+
+    def post(self, request):
+        serializer = FriendsWorkSerializer(data=request.data)
+        res = serializer.accept_request_friend(request.data, request.user.id)
+        return Response(res)
+
+
+class RequestFriendView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FriendsWorkSerializer
+
+    def post(self, request):
+        serializer = FriendsWorkSerializer(data=request.data)
+        res = serializer.request_friend(request.data, request.user.id)
+        return Response(res)
+
+

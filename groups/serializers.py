@@ -15,7 +15,6 @@ class NewGroupsSerializers(serializers.ModelSerializer):
     def create(self, validated_data):
         id = validated_data.get("id_user")
         name = validated_data.get("name")
-
         instance = Groups.objects.create(name=name)
         instance.subscribers.set([id])
         instance.admins.set([id])
@@ -38,15 +37,13 @@ class SubscribersSerializers(serializers.ModelSerializer):
 
 class NewPostSerializers(serializers.ModelSerializer):
 
-    id_user = serializers.IntegerField(write_only=True)
     id_group = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = Posts
-        fields = ['id_user', 'id_group', 'text', 'image']
+        fields = ['id_group', 'text', 'image']
 
-    def create(self, validated_data):
-        id_user = validated_data.get("id_user")
+    def new_post(self, validated_data, id_user):
         id_group = validated_data.get("id_group")
         text = validated_data.get("text")
         img = validated_data.get("image")
@@ -54,6 +51,10 @@ class NewPostSerializers(serializers.ModelSerializer):
         user = User.objects.get(id=id_user)
         group = Groups.objects.get(id=id_group)
 
+        try:
+            group.admins.get(id=id_user)
+        except ObjectDoesNotExist:
+            return False
         instance = Posts.objects.create(
             text=text,
             image=img,
@@ -142,3 +143,12 @@ class SubscribeSerializers(serializers.ModelSerializer):
         group = Groups.objects.get(id=id_group)
         group.subscribers.remove(id_user)
         return True
+
+
+class RepostsShowSerializers(serializers.ModelSerializer):
+
+    id_user = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Posts
+        fields = ["id_user"]

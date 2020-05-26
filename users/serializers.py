@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, UserData
+from .models import User, UserData, Friends
 
 
 class UserRegistrSerializer(serializers.ModelSerializer):
@@ -23,6 +23,8 @@ class UserRegistrSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({password: "Пароль не совпадает"})
         user.set_password(password)
         user.save()
+        friends = Friends(user=user)
+        friends.save()
         return user
 
 
@@ -33,18 +35,26 @@ class UserMainDataSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name', 'about_myself', 'gender', 'status']
 
 
+class FriendsDataSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Friends
+        fields = ['friends']
+
+
 class UserProfileSerializer(serializers.ModelSerializer):
     user_data = UserMainDataSerializer(read_only=True)
+    friends = FriendsDataSerializer(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'user_data']
+        fields = ['id', 'email', 'username', 'user_data', 'friends']
 
 
 class UserProfileSettingSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
-        fields = ['avatar', 'first_name', 'last_name', 'about_myself', 'gender', 'status', 'year_of_birth', ]
+        fields = ['avatar', 'first_name', 'last_name', 'about_myself', 'gender', 'status', 'year_of_birth']
 
     def update(self, instance, validated_data):
         instance.first_name = validated_data.get('first_name', instance.first_name)
@@ -56,3 +66,54 @@ class UserProfileSettingSerializer(serializers.ModelSerializer):
         # instance.year_of_birth = validated_data.get('year_of_birth', instance.year_of_birth)
         instance.save()
         return instance
+
+
+class FriendsWorkSerializer(serializers.ModelSerializer):
+
+    id_user = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = Friends
+        fields = ["id_user"]
+
+    def request_friend(self, validated_data, user):
+        id_user = validated_data.get("id_user")
+        friend = Friends.objects.get(user=id_user)
+        friend.request_friends.add(user)
+        return True
+
+    def accept_request_friend(self, validated_data, user):
+        id_user = validated_data.get("id_user")
+        your_friends = Friends.objects.get(user=user)
+        user_friends = Friends.objects.get(user=id_user)
+        your_friends.request_friends.remove(id_user)
+        your_friends.friends.add(id_user)
+        user_friends.friends.add(user)
+        return True
+
+    def reject_request_friend(self, validated_data, user):
+        id_user = validated_data.get("id_user")
+        your_friends = Friends.objects.get(user=user)
+        your_friends.request_friends.remove(id_user)
+        return True
+
+
+class FriendsShowSerializer(serializers.ModelSerializer):
+
+    def list(self, id_user):
+        friends = Friends.objects.get(user=id_user)
+        return friends.friends.all()
+
+
+class FriendsRequestSerializer(serializers.ModelSerializer):
+
+    def list(self, id_user):
+        friends = Friends.objects.get(user=id_user)
+        return friends.request_friends.all()
+
+
+class FriendsDataShowSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Friends
+        fields = ["friends", "request_friends"]

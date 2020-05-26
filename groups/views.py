@@ -7,8 +7,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from groups.pagination import GroupPostsPagination
+from users.models import User
 from .serializers import NewGroupsSerializers, SubscribeSerializers, NewPostSerializers, ListPostsGroupSerializers, \
-    PostWorkSerializers, RemovePostSerializers
+    PostWorkSerializers, RemovePostSerializers, RepostsShowSerializers
 from .models import Groups, Posts
 
 
@@ -32,10 +33,16 @@ class DataGroupViews(RetrieveAPIView):
 
     def get(self, request, pk):
         group = Groups.objects.get(pk=pk)
+
+        is_admin = request.user.id in group.admins.values_list('id', flat=True)
+        is_subscriber = request.user.id in group.subscribers.values_list('id', flat=True)
+
         data = {
             'id': group.id,
             'name': group.name,
             'subscribe': group.subscribers.count(),
+            'is_admin': is_admin,
+            'is_subscriber': is_subscriber,
         }
         return Response(data)
 
@@ -46,6 +53,13 @@ class ListSubscribersViews(RetrieveAPIView):
     def get(self, request, pk):
         group = Groups.objects.get(pk=pk)
         return Response(group.subscribers.all().values('id', 'username'))
+
+
+class UserSubscriptionsViews(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response(Groups.objects.filter(subscribers=request.user.id).values('id', 'name'))
 
 
 class NewSubscribeViews(APIView):
@@ -60,6 +74,18 @@ class NewSubscribeViews(APIView):
         return Response(res)
 
 
+class UnsubscribeViews(APIView):
+    queryset = Groups.objects.all()
+    serializer_class = SubscribeSerializers
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = SubscribeSerializers(data=request.data)
+        if serializer.is_valid():
+            res = serializer.removeSubscribe(request.data, id_user=request.user.id)
+        return Response(res)
+
+
 class NewPostViews(CreateAPIView):
     serializer_class = NewPostSerializers
     permission_classes = [IsAuthenticated]
@@ -68,8 +94,19 @@ class NewPostViews(CreateAPIView):
         serializer = NewPostSerializers(data=request.data)
         data = {}
         if serializer.is_valid():
-            post = serializer.save()
-            data['res'] = post.id
+            post = serializer.new_post(request.data, request.user.id)
+            data = {
+                "id": post.id,
+                "text": post.text,
+                "num_likes": len(post.likes.values_list("id", flat=True)),
+                "num_reposts": len(post.reposts.values_list("id", flat=True)),
+                "is_like": False,
+                "is_repost": False,
+                "group": {
+                    "id": post.group.id,
+                    "name": post.group.name,
+                }
+            }
         return Response(data)
 
 
@@ -82,7 +119,7 @@ class ListPostsGroupViews(APIView):
         paginator = GroupPostsPagination()
         page = paginator.paginate_queryset(queryset, request)
         serializer = ListPostsGroupSerializers(page, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        return paginator.get_paginated_response(serializer.data, request.user.id)
 
 
 class ListPostsGroupsSubViews(APIView):
@@ -159,13 +196,12 @@ class RemovePostViews(APIView):
         return Response(res)
 
 
-class UnsubscribeViews(APIView):
-    queryset = Groups.objects.all()
-    serializer_class = SubscribeSerializers
+class RepostsViews(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        serializer = SubscribeSerializers(data=request.data)
-        if serializer.is_valid():
-            res = serializer.removeSubscribe(request.data, id_user=request.user.id)
-        return Response(res)
+    def get(self, request, pk):
+        queryset = Posts.objects.filter(reposts=pk).order_by('-id')
+        paginator = GroupPostsPagination()
+        page = paginator.paginate_queryset(queryset, request)
+        serializer = ListPostsGroupSerializers(page, many=True)
+        return paginator.get_paginated_response(serializer.data, request.user.id)

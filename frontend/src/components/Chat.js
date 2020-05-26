@@ -12,8 +12,6 @@ class Chat extends React.Component {
     
     slug = null
 
-    limit
-
     state = { 
       "your_data_user": {},
       "user": {},
@@ -27,8 +25,8 @@ class Chat extends React.Component {
     }
 
     pagination = {
-      "limit": 5,
-      "offset": 10,
+      "limit": 25,
+      "offset": 25,
     }
 
     scrollToBottom = () => {
@@ -49,7 +47,7 @@ class Chat extends React.Component {
             console.log(res.data.msgs.results.length)
             if (res.data.msgs.results.length !== 0) {
               this.addPegMessage(res.data.msgs.results)
-              this.pagination.offset += 5;
+              this.pagination.offset += 25;
             } else {
               this.setState({pegMessage: false});
             }
@@ -100,8 +98,8 @@ class Chat extends React.Component {
       let message = JSON.parse(msg);
       this.pagination.offset++;
       this.setState(state => {
-        let nuw_msg = [{"text": message.message, "user": message.id_user}]
-        const msgs = nuw_msg.concat(state.msgs);
+        let new_msg = [{"text": message.message, "user": message.id_user}]
+        const msgs = new_msg.concat(state.msgs);
         return {msgs}
       })
     }
@@ -139,7 +137,6 @@ class Chat extends React.Component {
       this.slug = this.props.match.params.slug;
       this.getUserData();
       this.getMessages();
-      // this.scrollToBottom();
       this.client = new W3CWebSocket('ws://127.0.0.1:8000/ws/chat/' + this.slug + '/');
       
       this.client.onopen = () => {

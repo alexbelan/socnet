@@ -1,8 +1,6 @@
 import datetime
-
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-import jsonfield
 
 
 class MyUserManager(BaseUserManager):
@@ -23,6 +21,8 @@ class MyUserManager(BaseUserManager):
         )
         user.set_password(password)
         user.save(using=self._db)
+        friends = Friends(user=user)
+        friends.save()
         return user
 
     def create_user(self, email, username, password):
@@ -54,8 +54,7 @@ class UserData(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER, default='', blank=True, null=True)
     about_myself = models.CharField(max_length=255, default='', blank=True, null=True)
     status = models.CharField(max_length=1, choices=STATUS, default='', blank=True, null=True)
-    year_of_birth = models.DateField(default=datetime.date(2000, 4, 15), blank=True, null=True)
-    friends = jsonfield.JSONField()
+    year_of_birth = models.DateField(default=datetime.date(2000, 4, 15), blank=True, null=True)\
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -79,4 +78,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # def has_module_perms(self, app_label):
     #     return True
+
+
+class Friends(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    friends = models.ManyToManyField(User, related_name='freands')
+    request_friends = models.ManyToManyField(User, related_name='add_freands')
 
