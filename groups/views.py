@@ -22,7 +22,7 @@ class NewGroupViews(CreateAPIView):
         serializer = NewGroupsSerializers(data=request.data)
         data = {}
         if serializer.is_valid():
-            group = serializer.save()
+            group = serializer.create_group(request.data, request.user.id)
             data['res'] = group.id
         return Response(data)
 
@@ -131,7 +131,7 @@ class ListPostsGroupsSubViews(APIView):
         paginator = GroupPostsPagination()
         page = paginator.paginate_queryset(queryset, request)
         serializer = ListPostsGroupSerializers(page, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        return paginator.get_paginated_response(serializer.data, request.user.id)
 
 
 class PostAddLikeViews(APIView):

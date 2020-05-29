@@ -21,6 +21,10 @@ class userProfile extends Component {
             "gender": '',
             "status": ''
         },
+        "friends": {
+            "is_friend": '',
+            "is_request_friend": '',
+        },
         "id_user": '',
     };
 
@@ -90,6 +94,19 @@ class userProfile extends Component {
     getUserPage () {
         axios.get(API_URL + 'user/' + this.slug + '/').then(res => {
             this.setState(res.data)
+        })
+    }
+
+    addFriend = () => {
+        axios.post(API_URL + 'user/friends/request/', {
+            "id_user": this.state.id,
+        }).then(res => {
+            if (res.data) {
+                this.setState(state => {
+                    const friends = state.friends.is_request_friend = true
+                    return friends
+                })
+            }
         })
     }
 
@@ -210,8 +227,6 @@ class userProfile extends Component {
             </>)
         }
 
-
-
         return (
             <>
                 <div>
@@ -224,7 +239,20 @@ class userProfile extends Component {
                     <h5>О себе:</h5>
                     <p>{this.state.user_data.about_myself}</p>
                 </div>
-                <Button color="primary" size="lg" onClick={this.openChat}>Написать сообщение</Button>
+                <div className="container">
+                    <div className="row">
+                        <Button color="primary" onClick={this.openChat}>Send message</Button>
+                        {!this.state.friends.is_friend && !this.state.friends.is_request_friend && 
+                            <Button color="primary" onClick={this.addFriend}>Add friend</Button> 
+                        }
+                        {!this.state.friends.is_friend && this.state.friends.is_request_friend && 
+                            <Button outline color="primary" onClick={this.openChat}>Application sent</Button> 
+                        }
+                        {this.state.friends.is_friend && !this.state.friends.is_request_friend && 
+                            <Button outline color="" onClick={this.openChat}>Delete friend</Button> 
+                        }
+                    </div>
+                </div>
                 <hr/>
                 <div className="reposts">
                     {Posts}

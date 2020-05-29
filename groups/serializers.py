@@ -6,18 +6,15 @@ from .models import Groups, Posts
 
 class NewGroupsSerializers(serializers.ModelSerializer):
 
-    id_user = serializers.IntegerField(write_only=True)
-
     class Meta:
         model = Groups
-        fields = ["id_user", "name"]
+        fields = ["name"]
 
-    def create(self, validated_data):
-        id = validated_data.get("id_user")
+    def create_group(self, validated_data, id_user):
         name = validated_data.get("name")
         instance = Groups.objects.create(name=name)
-        instance.subscribers.set([id])
-        instance.admins.set([id])
+        instance.subscribers.set([id_user])
+        instance.admins.set([id_user])
         return instance
 
 

@@ -12,7 +12,7 @@ urlpatterns = [
     path('', HomeUserView.as_view(), name='home'),
     path('friends/', ShowFriendsView.as_view()),
     path('friends/requestall', ShowRequestFriendsView.as_view()),
-    path('friends/request', RequestFriendView.as_view()),
-    path('friends/reject', RejectRequestFriendView.as_view()),
-    path('friends/accept', AcceptRequestFriendView.as_view()),
+    path('friends/request/', RequestFriendView.as_view()),
+    path('friends/reject/', RejectRequestFriendView.as_view()),
+    path('friends/accept/', AcceptRequestFriendView.as_view()),
 ]

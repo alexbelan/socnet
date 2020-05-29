@@ -17,9 +17,6 @@ export function refreshJWT() {
             }).catch( res => {
                 localStorage.removeItem('access_token');
                 localStorage.removeItem('refresh_token');
-                // if (window.location.href !== REACT_URL + "login" || window.location.href !== REACT_URL + "registr" ) {
-                //     document.location.replace(REACT_URL + 'login');
-                // }
             });
         } 
     }, (1000 * 60 * 2.5) - 10)

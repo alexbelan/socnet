@@ -133,7 +133,7 @@ class GroupView extends Component {
     scrollPegPosts = () => {
         if (this.state.peg_next) {
             if (Math.round(document.body.getBoundingClientRect().bottom) ===  window.innerHeight) {
-                let query = API_URL + "groups/posts/" + this.slug + "/?limit=" + this.pagination.limit + "&offset=" + this.pagination.offset;
+                let query = API_URL + "groups/" + this.slug + "/posts/?limit=" + this.pagination.limit + "&offset=" + this.pagination.offset;
                 axios.get(query).then(res => {
                     this.pegPosts(res.data.results)
                 })
@@ -173,7 +173,7 @@ class GroupView extends Component {
         this.slug = this.props.match.params.slug;
         axios.defaults.headers.common['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
         document.addEventListener("scroll", this.scrollPegPosts)
-        axios.get(API_URL + 'groups/posts/' + this.slug + '/').then(res => {
+        axios.get(API_URL + "groups/" + this.slug + "/posts/").then(res => {
             this.setState({
                 "group_posts": res.data.results,
                 "peg_next": (res.data.next) ? true : false,

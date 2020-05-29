@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { API_URL, REACT_URL } from "../constants";
-import {ListGroupItem} from "reactstrap";
+import {ListGroupItem, Button} from "reactstrap";
 
 function ListGroups (props) {
     if (props.GroupId) {
@@ -41,7 +41,20 @@ class SubView extends Component {
         }
 
 
-        return(<>{groups}</>)
+        return(
+        <>
+        <div className="container">
+            <div className="row">
+                <div className="content">
+                    {groups}
+                </div>
+                <div>
+                    <Button teg="a" href={REACT_URL + "create/group/"} color="primary">Create group</Button>
+                </div>
+            </div>
+        </div>
+        </>
+        )
     }   
 
 }

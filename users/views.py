@@ -38,24 +38,36 @@ class CheckUserView(APIView):
 
 
 class UserView(RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserProfileSerializer
+    # queryset = User.objects.all()
+    # serializer_class = UserProfileSerializer
     permission_classes = [AllowAny]
 
-    # def get(self, request, pk, *args, **kwargs):
-    #     serializer = UserProfileSerializer(request)
-    #     user_data = UserData.objects.get(id=queryset.user_data)
-    #     # data = {
-    #     #     'username': serializer.username,
-    #     #     'email': serializer.email,
-    #     #     'first_name': user_data.first_name,
-    #     #     'last_name': user_data.last_name,
-    #     #     'about_myself': user_data.about_myself,
-    #     #     'gender': user_data.gender,
-    #     #     'status': user_data.status,
-    #     #     'year_of_birth': user_data.year_of_birth,
-    #     # }
-    #     return Response(data)
+    def get(self, request, pk):
+        user = User.objects.get(pk=pk)
+        user_data = user.user_data
+        friends = Friends.objects.get(user=user)
+
+        is_friend = request.user.id in friends.friends.values_list('id', flat=True)
+        is_request_friend = request.user.id in friends.request_friends.values_list('id', flat=True)
+
+        data = {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'user_data': {
+                'first_name': user_data.first_name,
+                'last_name': user_data.last_name,
+                'about_myself': user_data.about_myself,
+                'gender': user_data.gender,
+                'status': user_data.status,
+                # 'year_of_birth': user_data.year_of_birth,
+            },
+            "friends": {
+                "is_friend": is_friend,
+                "is_request_friend": is_request_friend,
+            }
+        }
+        return Response(data)
 
 
 class HomeUserView(RetrieveAPIView):

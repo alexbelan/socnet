@@ -26,6 +26,9 @@ class Header extends Component {
                                 <Link className="nav-link" to="/chats">Chat</Link>
                             </li>
                             <li className="nav-item">
+                                <Link className="nav-link" to="/news">News</Link>
+                            </li>
+                            <li className="nav-item">
                                 <Link className="nav-link" to="/setting">Setting</Link>
                             </li>
                             <li className="nav-item">
