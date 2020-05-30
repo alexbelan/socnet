@@ -17,6 +17,8 @@ class Home extends Component {
         "gender": '',
         "status": '',
         "year_of_birth": '',
+        "freands": 0,
+        "request_freands": 0,
     };
 
     JWT = {
@@ -36,7 +38,7 @@ class Home extends Component {
             case '2':
                 return 'Женьшинв'        
             default:
-                return ''
+                return 'Не указано'
         }
     }
 
@@ -55,7 +57,7 @@ class Home extends Component {
             case '6':
                 return 'В активном поиске'      
             default:
-                return ''
+                return 'Статуса нет'
         }
     }
 
@@ -142,6 +144,10 @@ class Home extends Component {
     render(h) {
 
         const Posts = []
+        const AboutMyself = [
+            <h5>О себе:</h5>,
+            <p>{this.state.about_myself}</p>
+        ]
 
         for (const key in this.state.reposts) {
             let url = REACT_URL + "group/" + this.state.reposts[key].group.id + "/"
@@ -170,16 +176,31 @@ class Home extends Component {
 
         return (
             <>
-                <div>
-                    <h2>Привет {this.state.username}</h2>
-                    <h4>Полное имя: {this.state.first_name} {this.state.last_name}</h4>
-                    <ul>
-                        <li>Email: {this.state.email}</li>
-                        <li>Пол: {this.gender()}</li>
-                        <li>Семейное положение: {this.status()}</li>
-                    </ul>
-                    <h5>О себе:</h5>
-                    <p>{this.state.about_myself}</p>
+                <div className="container">
+                    <div className="row">
+                        <div>
+                            <h2>Hello {this.state.username}</h2>
+                            <h4>Name: {this.state.first_name} {this.state.last_name}</h4>
+                            <ul>
+                                <li>Email: {this.state.email}</li>
+                                <li>Gender: {this.gender()}</li>
+                                <li>Family status: {this.status()}</li>
+                                <li>Friends: {this.state.freands}</li>
+                            </ul>
+                            {this.state.about_myself !== "" &&
+                                AboutMyself
+                            }
+                        </div>
+                        <div>
+                            {this.state.request_freands === 0 &&
+                                <Button outline tag="a" href={REACT_URL + "request/all/"} color="primary">New Friends {this.state.request_freands}</Button>
+                            }
+                            {this.state.request_freands !== 0 &&
+                                <Button tag="a" href={REACT_URL + "request/all/"} color="primary">New Friends {this.state.request_freands}</Button>
+                            }
+                        </div>
+                    </div>
+                    
                 </div>
                 <div className="reposts">
                     {Posts}

@@ -157,11 +157,12 @@ class Chat extends React.Component {
       const Messages = []
 
       for (const key in this.state.msgs) {
+        let url = this.state.msgs[key].user
         let username = (this.state.msgs[key].user === this.state.user.id) ? this.state.user.username : this.state.your_data_user.username
         Messages.unshift(
         <>
         <Card body>
-          <CardTitle>{username}</CardTitle>
+          <CardTitle tag="a" href={REACT_URL + "user/" + url}>{username}</CardTitle>
           <CardText>{this.state.msgs[key].text}</CardText>
         </Card>
         </>)

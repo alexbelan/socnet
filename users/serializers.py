@@ -97,6 +97,14 @@ class FriendsWorkSerializer(serializers.ModelSerializer):
         your_friends.request_friends.remove(id_user)
         return True
 
+    def delete_friend(self, validated_data, user):
+        id_user = validated_data.get("id_user")
+        friends = Friends.objects.get(user=id_user)
+        your_friends = Friends.objects.get(user=user)
+        friends.friends.remove(user)
+        your_friends.friends.remove(id_user)
+        return True
+
 
 class FriendsShowSerializer(serializers.ModelSerializer):
 

@@ -2,7 +2,7 @@ import "../style/GroupView.css"
 import React, { Component } from "react";
 import axios from "axios";
 import { API_URL, REACT_URL } from "../constants";
-import { Card, Button, CardText, FormGroup, Input, CardTitle } from "reactstrap";
+import { Card, Button, CardText, FormGroup, Input} from "reactstrap";
 
 class GroupView extends Component {
 
@@ -226,7 +226,7 @@ class GroupView extends Component {
                 <div className="row">
                     <div className="group-block">
                         <h1>{this.state.group_data.name}</h1>
-                        <h4>Подписчики: {this.state.group_data.subscribe}</h4>
+                        <h4><a href={REACT_URL + "subscribers/" + this.slug }>Подписчики: {this.state.group_data.subscribe}</a></h4>
                     </div>
                     <div className="group-block">
                     { !this.state.group_data.is_subscriber && 

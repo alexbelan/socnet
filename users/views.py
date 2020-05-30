@@ -65,6 +65,7 @@ class UserView(RetrieveAPIView):
             "friends": {
                 "is_friend": is_friend,
                 "is_request_friend": is_request_friend,
+                "friends": len(friends.friends.all()),
             }
         }
         return Response(data)
@@ -176,6 +177,16 @@ class AcceptRequestFriendView(APIView):
         return Response(res)
 
 
+class DeleteFriendView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FriendsWorkSerializer
+
+    def post(self, request):
+        serializer = FriendsWorkSerializer(data=request.data)
+        res = serializer.delete_friend(request.data, request.user.id)
+        return Response(res)
+
+
 class RequestFriendView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = FriendsWorkSerializer
@@ -184,5 +195,6 @@ class RequestFriendView(APIView):
         serializer = FriendsWorkSerializer(data=request.data)
         res = serializer.request_friend(request.data, request.user.id)
         return Response(res)
+
 
 

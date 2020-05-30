@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Card,CardText } from "reactstrap";
+import { Button, Card,CardText, Alert } from "reactstrap";
 import axios from "axios";
 
 import { API_URL, REACT_URL } from "../constants";
@@ -22,8 +22,8 @@ class userProfile extends Component {
             "status": ''
         },
         "friends": {
-            "is_friend": '',
-            "is_request_friend": '',
+            "is_friend": null,
+            "is_request_friend": null,
         },
         "id_user": '',
     };
@@ -45,7 +45,7 @@ class userProfile extends Component {
             case '2':
                 return 'Женьшинв'        
             default:
-                return ''
+                return 'Не указано'
         }
     }
 
@@ -64,7 +64,7 @@ class userProfile extends Component {
             case '6':
                 return 'В активном поиске'      
             default:
-                return ''
+                return 'Статуса нет'
         }
     }
 
@@ -79,7 +79,6 @@ class userProfile extends Component {
     }
 
     getUser () {
-        axios.defaults.headers.common['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
         axios.get(API_URL + 'user/').then(res => {
             console.log(this.slug + " " + res.data.id)
             if (this.slug == res.data.id) {
@@ -87,7 +86,6 @@ class userProfile extends Component {
             } else {
                 this.setState({'id_user': res.data.id})
             }
-            
         })
     }
 
@@ -104,6 +102,19 @@ class userProfile extends Component {
             if (res.data) {
                 this.setState(state => {
                     const friends = state.friends.is_request_friend = true
+                    return friends
+                })
+            }
+        })
+    }
+
+    deleteFriend = () => {
+        axios.post(API_URL + 'user/friends/delete/', {
+            "id_user": this.state.id,
+        }).then(res => {
+            if (res.data) {
+                this.setState(state => {
+                    const friends = state.friends.is_friend = false
                     return friends
                 })
             }
@@ -186,6 +197,7 @@ class userProfile extends Component {
     }
 
     componentDidMount() {
+        axios.defaults.headers.common['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
         this.slug  = this.props.match.params.slug
         this.getUserPage()
         this.getUser()
@@ -198,6 +210,10 @@ class userProfile extends Component {
     render(h) {
 
         const Posts = []
+        const AboutMyself = [
+            <h5>О себе:</h5>,
+            <p>{this.state.user_data.about_myself}</p>
+        ]
 
         for (const key in this.state.reposts) {
             let url = REACT_URL + "group/" + this.state.reposts[key].group.id + "/"
@@ -230,14 +246,17 @@ class userProfile extends Component {
         return (
             <>
                 <div>
-                    <h2>{this.state.user_data.first_name} {this.state.user_data.last_name}</h2>
+                    <h2>Username: {this.state.username}</h2>
+                    <h3>{this.state.user_data.first_name} {this.state.user_data.last_name}</h3>
                     <ul>
                         <li>Email: {this.state.email}</li>
-                        <li>Пол: {this.gender()}</li>
-                        <li>Семейное положение: {this.status()}</li>
+                        <li>gender: {this.gender()}</li>
+                        <li>Family status: {this.status()}</li>
+                        <li>Friends: {this.state.friends.friends}</li>
                     </ul>
-                    <h5>О себе:</h5>
-                    <p>{this.state.user_data.about_myself}</p>
+                    {this.state.user_data.about_myself !== "" &&
+                        AboutMyself
+                    }
                 </div>
                 <div className="container">
                     <div className="row">
@@ -246,10 +265,10 @@ class userProfile extends Component {
                             <Button color="primary" onClick={this.addFriend}>Add friend</Button> 
                         }
                         {!this.state.friends.is_friend && this.state.friends.is_request_friend && 
-                            <Button outline color="primary" onClick={this.openChat}>Application sent</Button> 
+                            <Alert color="primary">Application sent</Alert> 
                         }
-                        {this.state.friends.is_friend && !this.state.friends.is_request_friend && 
-                            <Button outline color="" onClick={this.openChat}>Delete friend</Button> 
+                        {this.state.friends.is_friend && 
+                            <Button outline color="danger" onClick={this.deleteFriend}>Delete friend</Button> 
                         }
                     </div>
                 </div>
