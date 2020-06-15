@@ -38,7 +38,7 @@ class Chat extends React.Component {
     scrollPagination = (e) => {
       if (this.state.pegMessages) {
         if (e.target.scrollTop === 0) {
-          let query = API_URL + "chat/listmsgs/" + this.slug + "/?limit=" + this.pagination.limit + "&offset=" + this.pagination.offset;
+          let query = API_URL + "/chat/listmsgs/" + this.slug + "/?limit=" + this.pagination.limit + "&offset=" + this.pagination.offset;
           axios.get(query, {
             headers: {
               Authorization: 'JWT ' + localStorage.getItem('access_token')
@@ -66,7 +66,7 @@ class Chat extends React.Component {
     }
 
     getUserData() {
-      axios.get(API_URL + 'user/', {
+      axios.get(API_URL + '/user/', {
         headers: {
           Authorization: 'JWT ' + localStorage.getItem('access_token')
         }
@@ -75,13 +75,14 @@ class Chat extends React.Component {
           "your_data_user": {
             "id": res.data.id,
             "username": res.data.username,
+            "photo_user": res.data.user_data.photo_user 
           }
         })
       })
     }
 
     getMessages() {
-      axios.get(API_URL + 'chat/listmsgs/' + this.slug, {
+      axios.get(API_URL + '/chat/listmsgs/' + this.slug, {
         headers: {
           Authorization: 'JWT ' + localStorage.getItem('access_token')
         }
@@ -162,7 +163,9 @@ class Chat extends React.Component {
         Messages.unshift(
         <>
         <Card body>
-          <CardTitle tag="a" href={REACT_URL + "user/" + url}>{username}</CardTitle>
+          <CardTitle tag="a" href={REACT_URL + "/user/" + url}>
+            {username}
+          </CardTitle>
           <CardText>{this.state.msgs[key].text}</CardText>
         </Card>
         </>)

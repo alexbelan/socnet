@@ -3,7 +3,7 @@ import { Form, FormGroup, Input, Label } from "reactstrap";
 
 import axios from "axios";
 
-import { API_URL } from "../constants";
+import { API_URL, REACT_URL } from "../constants";
 
 class CreateGroupView extends React.Component {
     state = {
@@ -16,9 +16,9 @@ class CreateGroupView extends React.Component {
 
     createGroup = e => {
         e.preventDefault();
-        axios.post(API_URL + 'groups/new/', this.state).then(res => {
+        axios.post(API_URL + '/groups/new/', this.state).then(res => {
             if (res.data.res) {
-                window.location.assign('http://localhost:3000/group/' + res.data.res + '/');
+                window.location.assign(REACT_URL + '/group/' + res.data.res + '/');
             }
         });
     };

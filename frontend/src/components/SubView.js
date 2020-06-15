@@ -6,7 +6,7 @@ import {ListGroupItem, Button} from "reactstrap";
 function ListGroups (props) {
     if (props.GroupId) {
       return (
-        <ListGroupItem tag="a" href={REACT_URL + "group/" + props.GroupId} action>{props.GroupName}</ListGroupItem>
+        <ListGroupItem tag="a" href={REACT_URL + "/group/" + props.GroupId} action>{props.GroupName}</ListGroupItem>
       );
     }
     return ("Данных нет")
@@ -21,7 +21,7 @@ class SubView extends Component {
     componentDidMount() {
         if (localStorage.getItem('access_token')) {
             axios.defaults.headers.common['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
-            axios.get(API_URL + 'groups/subscriptions/').then(res => {
+            axios.get(API_URL + '/groups/subscriptions/').then(res => {
                 this.setState({"groups": res.data})
             })
         } else {

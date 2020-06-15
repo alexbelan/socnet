@@ -11,23 +11,23 @@ class FriendsAll extends Component {
     }
 
     getUser () {
-        axios.get(API_URL + 'user/').then(res => {
+        axios.get(API_URL + '/user/').then(res => {
             this.setState({'id': res.data.id})
         })
     }
 
     openChat = (id) => {
-        axios.post(API_URL + "chat/new/", {
+        axios.post(API_URL + "/chat/new/", {
             "id_user1": this.state.id,
             "id_user2": id,
         }).then(res => {
-            document.location.replace(REACT_URL + 'chat/' + res.data.response);
+            document.location.replace(REACT_URL + '/chat/' + res.data.response);
             console.log(res.data)
         })
     }
 
     deleteFriend = (id, key, e) => {
-        axios.post(API_URL + "user/friends/delete/", {
+        axios.post(API_URL + "/user/friends/delete/", {
             "id_user": id,
         }).then(res => {
             if (res.data) {
@@ -43,11 +43,11 @@ class FriendsAll extends Component {
         if (localStorage.getItem('access_token')) {
             axios.defaults.headers.common['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
             this.getUser()
-            axios.get(API_URL + 'user/friends/').then(res => {
+            axios.get(API_URL + '/user/friends/').then(res => {
                 this.setState({"users": res.data})
             })
         } else {
-            document.location.replace('http://localhost:3000/login');
+            document.location.replace(REACT_URL + '/login');
         }
     };
 
@@ -56,7 +56,7 @@ class FriendsAll extends Component {
         const Users = []
 
         for (const key in this.state.users) {
-            let url = REACT_URL + "user/" + this.state.users[key].id + "/";
+            let url = REACT_URL + "/user/" + this.state.users[key].id + "/";
             Users.unshift(
             <>
                <Card body id={key}>

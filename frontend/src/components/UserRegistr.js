@@ -3,7 +3,7 @@ import { Form, FormGroup, Input, Label } from "reactstrap";
 
 import axios from "axios";
 
-import { API_URL } from "../constants";
+import { API_URL, REACT_URL } from "../constants";
 
 class UserRegistr extends React.Component {
     state = {
@@ -15,7 +15,7 @@ class UserRegistr extends React.Component {
 
     componentDidMount() {
         if (localStorage.getItem('access_token')) {
-            window.location.assign('http://localhost:3000/');
+            window.location.assign(REACT_URL);
         }
         if (this.props.registr) {
           const { email, username, password, password2 } = this.props.registr;
@@ -45,7 +45,7 @@ class UserRegistr extends React.Component {
 
       createUser = e => {
         e.preventDefault();
-        axios.post(API_URL + 'user/registr/', this.state).then(res => {
+        axios.post(API_URL + '/user/registr/', this.state).then(res => {
           this.state.res = res.data;
         });
       };

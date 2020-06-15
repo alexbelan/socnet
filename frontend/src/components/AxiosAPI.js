@@ -8,7 +8,7 @@ export function refreshJWT() {
         if(localStorage.getItem('refresh_token')) {
             axios({
                 method: 'post',
-                url: API_URL + 'auth/jwt/refresh/',
+                url: API_URL + '/auth/jwt/refresh/',
                 data: {
                     refresh: localStorage.getItem('refresh_token')
                 }
@@ -23,5 +23,5 @@ export function refreshJWT() {
 }
 
 export function replaceLogin () {
-    document.location.replace(REACT_URL + 'login');
+    document.location.replace(REACT_URL + '/login');
 }

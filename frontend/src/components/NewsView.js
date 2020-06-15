@@ -18,7 +18,7 @@ class NewsView extends Component {
     slug = null
 
     liked = (id, e) => {
-        axios.post(API_URL + 'groups/post/addlike/', {
+        axios.post(API_URL + '/groups/post/addlike/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -32,7 +32,7 @@ class NewsView extends Component {
     }
 
     deliked = (id, e) => {
-        axios.post(API_URL + 'groups/post/removelike/', {
+        axios.post(API_URL + '/groups/post/removelike/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -46,7 +46,7 @@ class NewsView extends Component {
     }
 
     repost = (id, e) => {
-        axios.post(API_URL + 'groups/post/addrepost/', {
+        axios.post(API_URL + '/groups/post/addrepost/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -59,7 +59,7 @@ class NewsView extends Component {
     }
 
     removeRepost = (id, e) => {
-        axios.post(API_URL + 'groups/post/removerepost/', {
+        axios.post(API_URL + '/groups/post/removerepost/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -86,7 +86,7 @@ class NewsView extends Component {
     scrollPegPosts = () => {
         if (this.state.peg_next) {
             if (Math.round(document.body.getBoundingClientRect().bottom) ===  window.innerHeight) {
-                let query = API_URL + "groups/news/?limit=" + this.pagination.limit + "&offset=" + this.pagination.offset;
+                let query = API_URL + "/groups/news/?limit=" + this.pagination.limit + "&offset=" + this.pagination.offset;
                 axios.get(query).then(res => {
                     this.pegPosts(res.data.results)
                 })
@@ -98,13 +98,13 @@ class NewsView extends Component {
         this.slug = this.props.match.params.slug;
         axios.defaults.headers.common['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
         document.addEventListener("scroll", this.scrollPegPosts)
-        axios.get(API_URL + "groups/news/").then(res => {
+        axios.get(API_URL + "/groups/news/").then(res => {
             this.setState({
                 "news": res.data.results,
                 "peg_next": (res.data.next) ? true : false,
             })
         })
-        axios.get(API_URL + 'groups/' + this.slug + '/').then(res => {
+        axios.get(API_URL + '/groups/' + this.slug + '/').then(res => {
             this.setState({"group_data": res.data})
         })
     };
@@ -115,7 +115,7 @@ class NewsView extends Component {
         const Posts = []
 
         for (const key in this.state.news) {
-            let url = REACT_URL + "group/" + this.state.news[key].group.id + "/"
+            let url = REACT_URL + "/group/" + this.state.news[key].group.id + "/"
             Posts.push(
             <>
                 <Card body id={key}>

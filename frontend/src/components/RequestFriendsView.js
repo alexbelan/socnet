@@ -19,7 +19,7 @@ class RequestFriendsView extends Component {
     }
 
     addFriend = (id, key, e) => {
-        axios.post(API_URL + "user/friends/accept/", {
+        axios.post(API_URL + "/user/friends/accept/", {
             "id_user": id,
         }).then(res => {
             if (res.data) {
@@ -32,7 +32,7 @@ class RequestFriendsView extends Component {
     } 
 
     deleteFriend = (id, key, e) => {
-        axios.post(API_URL + "user/friends/reject/", {
+        axios.post(API_URL + "/user/friends/reject/", {
             "id_user": id,
         }).then(res => {
             if (res.data) {
@@ -47,11 +47,11 @@ class RequestFriendsView extends Component {
     componentDidMount() {
         if (localStorage.getItem('access_token')) {
             axios.defaults.headers.common['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
-            axios.get(API_URL + 'user/friends/requestall/').then(res => {
+            axios.get(API_URL + '/user/friends/requestall/').then(res => {
                 this.setState({"users": res.data})
             })
         } else {
-            document.location.replace('http://localhost:3000/login');
+            document.location.replace(REACT_URL + '/login');
         }
     };
 
@@ -60,7 +60,7 @@ class RequestFriendsView extends Component {
         const Users = []
 
         for (const key in this.state.users) {
-            let url = REACT_URL + "user/" + this.state.users[key].id + "/";
+            let url = REACT_URL + "/user/" + this.state.users[key].id + "/";
             Users.unshift(
             <>
                <Card body id={key}>

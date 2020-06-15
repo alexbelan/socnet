@@ -12,6 +12,7 @@ class UserRegistrSerializer(serializers.ModelSerializer):
     def save(self, *args, **kwargs):
         user_data = UserData()
         user_data.save()
+
         user = User(
             email=self.validated_data['email'],
             username=self.validated_data['username'],
@@ -32,14 +33,20 @@ class UserMainDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserData
-        fields = ['first_name', 'last_name', 'about_myself', 'gender', 'status']
+        fields = ['first_name', 'last_name', "photo_user", 'about_myself', 'gender', 'status']
 
 
 class FriendsDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Friends
-        fields = ['friends']
+        fields = ['friends', 'request_friends']
+
+    def validate_friends(self, value):
+        return len(value.data)
+
+    def validate_request_friends(self, value):
+        return len(value.data)
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -49,6 +56,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'username', 'user_data', 'friends']
+
+
+class UserPhotoSettingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserData
+        fields = ["photo_user"]
+
+    def update(self, instance, validated_data):
+        instance.photo_user = validated_data.get('photo_user', instance.photo_user)
+        instance.save()
+        return instance
 
 
 class UserProfileSettingSerializer(serializers.ModelSerializer):
@@ -63,9 +81,20 @@ class UserProfileSettingSerializer(serializers.ModelSerializer):
         instance.about_myself = validated_data.get('about_myself', instance.about_myself)
         instance.gender = validated_data.get('gender', instance.gender)
         instance.status = validated_data.get('status', instance.status)
-        # instance.year_of_birth = validated_data.get('year_of_birth', instance.year_of_birth)
         instance.save()
         return instance
+
+
+# class UserPhotoSettingSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = UserData
+#         fields = ["photo_user"]
+#
+#     def update(self, instance, validated_data):
+#         instance.photo_user = validated_data.get('photo_user', instance.photo_user)
+#         instance.save()
+#         return instance
 
 
 class FriendsWorkSerializer(serializers.ModelSerializer):

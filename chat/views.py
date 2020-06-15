@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from chat.pagination import MessagesPagination
-from users.models import User
+from users.models import User, UserData
 from .models import Chat, Message
 from chat.serializers import NewChatSerializers, ShowChatsSerializers, ListMessageSerializers, GetUserDataForChat
 
@@ -51,9 +51,10 @@ class ListMessageView(ListAPIView):
         paginator = MessagesPagination()
         page = paginator.paginate_queryset(queryset, request)
         serializer = ListMessageSerializers(page, many=True)
+        user = chat.users.all().exclude(id=request.user.id).values('id', 'username'),
         data = {
             'msgs': paginator.get_paginated(serializer.data),
-            'user': chat.users.all().exclude(id=request.user.id).values('id', 'username')
+            'user': user,
         }
         return Response(data)
 

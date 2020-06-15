@@ -1,3 +1,4 @@
+import '../style/UserProfile.css'
 import React, { Component } from "react";
 import axios from "axios";
 import { Card,CardText, Button } from "reactstrap";
@@ -11,14 +12,20 @@ class Home extends Component {
         "id": '',
         "username": '',
         "email": '',
-        "first_name": '',
-        "last_name": '',
-        "about_myself": '',
-        "gender": '',
-        "status": '',
-        "year_of_birth": '',
-        "freands": 0,
-        "request_freands": 0,
+        "user_data": {
+            "first_name": '',
+            "last_name": '',
+            "photo_user": '',
+            "about_myself": '',
+            "gender": '',
+            "status": '',
+            "year_of_birth": '',
+        },
+        "friends": {
+            "friends": 0,
+            "request_friends": 0,
+        }
+        
     };
 
     JWT = {
@@ -32,7 +39,7 @@ class Home extends Component {
     }
 
     gender () {
-        switch (this.state.gender) {
+        switch (this.state.user_data.gender) {
             case '1':
                 return 'Мужчина'
             case '2':
@@ -43,7 +50,7 @@ class Home extends Component {
     }
 
     status () {
-        switch (this.state.status) {
+        switch (this.state.user_data.status) {
             case '1':
                 return 'Не женат'
             case '2':
@@ -62,7 +69,7 @@ class Home extends Component {
     }
 
     liked = (id, e) => {
-        axios.post(API_URL + 'groups/post/addlike/', {
+        axios.post(API_URL + '/groups/post/addlike/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -75,7 +82,7 @@ class Home extends Component {
     }
 
     deliked = (id, e) => {
-        axios.post(API_URL + 'groups/post/removelike/', {
+        axios.post(API_URL + '/groups/post/removelike/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -88,7 +95,7 @@ class Home extends Component {
     }
 
     removeRepost = (id, e) => {
-        axios.post(API_URL + 'groups/post/removerepost/', {
+        axios.post(API_URL + '/groups/post/removerepost/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -115,7 +122,7 @@ class Home extends Component {
     scrollPegPosts = () => {
         if (this.state.peg_next) {
             if (Math.round(document.body.getBoundingClientRect().bottom) ===  window.innerHeight) {
-                let query = API_URL + "groups/post/reposts/"+ this.state.id +"/?limit=" + this.pagination.limit + "&offset=" + this.pagination.offset;
+                let query = API_URL + "/groups/post/reposts/"+ this.state.id +"/?limit=" + this.pagination.limit + "&offset=" + this.pagination.offset;
                 axios.get(query).then(res => {
                     this.pegPosts(res.data.results)
                 })
@@ -126,9 +133,9 @@ class Home extends Component {
     componentDidMount() {
         if (localStorage.getItem('access_token')) {
             axios.defaults.headers.common['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
-            axios.get(API_URL + 'user/').then(res => {
+            axios.get(API_URL + '/user/').then(res => {
                 this.setState(res.data)
-                axios.get(API_URL + "groups/post/reposts/" + res.data.id + "/").then(res => {
+                axios.get(API_URL + "/groups/post/reposts/" + res.data.id + "/").then(res => {
                     this.setState({
                         "reposts": res.data.results,
                         "peg_next": (res.data.next) ? true : false,
@@ -136,7 +143,7 @@ class Home extends Component {
                 })
             })
         } else {
-            document.location.replace(REACT_URL + 'login');
+            document.location.replace(REACT_URL + '/login');
         }
         document.addEventListener("scroll", this.scrollPegPosts)
     };
@@ -146,11 +153,11 @@ class Home extends Component {
         const Posts = []
         const AboutMyself = [
             <h5>О себе:</h5>,
-            <p>{this.state.about_myself}</p>
+            <p>{this.state.user_data.about_myself}</p>
         ]
 
         for (const key in this.state.reposts) {
-            let url = REACT_URL + "group/" + this.state.reposts[key].group.id + "/"
+            let url = REACT_URL + "/group/" + this.state.reposts[key].group.id + "/"
             Posts.push(
             <>
                 <Card body id={key}>
@@ -179,24 +186,27 @@ class Home extends Component {
                 <div className="container">
                     <div className="row">
                         <div>
+                            <img src={API_URL + this.state.user_data.photo_user} className="photo-user profile"/>
+                        </div>
+                        <div>
                             <h2>Hello {this.state.username}</h2>
-                            <h4>Name: {this.state.first_name} {this.state.last_name}</h4>
+                            <h4>Name: {this.state.user_data.first_name} {this.state.user_data.last_name}</h4>
                             <ul>
                                 <li>Email: {this.state.email}</li>
                                 <li>Gender: {this.gender()}</li>
                                 <li>Family status: {this.status()}</li>
-                                <li>Friends: {this.state.freands}</li>
+                                <li>Friends: {this.state.friends.friends}</li>
                             </ul>
-                            {this.state.about_myself !== "" &&
+                            {this.state.user_data.about_myself !== "" &&
                                 AboutMyself
                             }
                         </div>
                         <div>
-                            {this.state.request_freands === 0 &&
-                                <Button outline tag="a" href={REACT_URL + "request/all/"} color="primary">New Friends {this.state.request_freands}</Button>
+                            {this.state.friends.request_friends === 0 &&
+                                <Button outline tag="a" href={REACT_URL + "/request/all/"} color="primary">New Friends {this.state.request_freands}</Button>
                             }
-                            {this.state.request_freands !== 0 &&
-                                <Button tag="a" href={REACT_URL + "request/all/"} color="primary">New Friends {this.state.request_freands}</Button>
+                            {this.state.friends.request_friends !== 0 &&
+                                <Button tag="a" href={REACT_URL + "/request/all/"} color="primary">New Friends {this.state.request_freands}</Button>
                             }
                         </div>
                     </div>

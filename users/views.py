@@ -1,5 +1,6 @@
 import request as request
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, \
     get_object_or_404, ListAPIView
@@ -8,7 +9,7 @@ from rest_framework.views import APIView
 
 from .models import User, UserData, Friends
 from .serializers import UserRegistrSerializer, UserProfileSerializer, UserProfileSettingSerializer, \
-    FriendsShowSerializer, FriendsRequestSerializer, FriendsWorkSerializer
+    FriendsShowSerializer, FriendsRequestSerializer, FriendsWorkSerializer, UserPhotoSettingSerializer
 
 
 # Create your views here.
@@ -60,6 +61,7 @@ class UserView(RetrieveAPIView):
                 'about_myself': user_data.about_myself,
                 'gender': user_data.gender,
                 'status': user_data.status,
+                'photo': user_data.photo_user.url,
                 # 'year_of_birth': user_data.year_of_birth,
             },
             "friends": {
@@ -73,23 +75,20 @@ class UserView(RetrieveAPIView):
 
 class HomeUserView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser,)
 
     def get(self, request):
-        user = User.objects.get(id=request.user.id)
-        user_data = user.user_data
-        friends = Friends.objects.get(user=request.user.id)
+        queryset = User.objects.get(pk=request.user.id)
+        serializer = UserProfileSerializer(queryset)
         data = {
-            'id': request.user.id,
-            'username': request.user.username,
-            'email': request.user.email,
-            'first_name': user_data.first_name,
-            'last_name': user_data.last_name,
-            'about_myself': user_data.about_myself,
-            'gender': user_data.gender,
-            'status': user_data.status,
-            'year_of_birth': user_data.year_of_birth,
-            'freands': len(friends.friends.all()),
-            'request_freands': len(friends.request_friends.all())
+            'id': serializer.data.get('id'),
+            'username': serializer.data.get('username'),
+            'email': serializer.data.get('email'),
+            'user_data': serializer.data.get('user_data'),
+            'friends': {
+                'friends': len(serializer.data.get('friends').get('friends')),
+                'request_friend': len(serializer.data.get('friends').get('request_friends'))
+            }
         }
         return Response(data)
 
@@ -135,6 +134,27 @@ class UserSettingView(UpdateAPIView):
         else:
             data = serializer.errors
         return Response(data)
+
+
+class UserSettingPhotoView(UpdateAPIView):
+    queryset = UserData.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserPhotoSettingSerializer
+    parser_classes = (MultiPartParser, FormParser,)
+
+    def get(self, request):
+        queryset = UserData.objects.get(pk=request.user.id)
+        serializer = UserPhotoSettingSerializer(queryset)
+        return Response(serializer.data)
+
+    def put(self, request, *args, **kwargs):
+        # queryset = UserData.objects.get(pk=request.user.id)
+        user_data = get_object_or_404(UserData.objects.all(), id=request.user.id)
+        serializer = UserPhotoSettingSerializer(instance=user_data, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            photo = serializer.update(user_data, request.data)
+            Response(photo)
+        return Response(serializer.data)
 
 
 class ShowFriendsView(APIView):

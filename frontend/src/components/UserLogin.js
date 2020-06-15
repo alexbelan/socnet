@@ -3,7 +3,7 @@ import { Form, FormGroup, Input, Label } from "reactstrap";
 
 import axios from "axios";
 
-import { API_URL } from "../constants";
+import { API_URL, REACT_URL } from "../constants";
 
 class UserLogin extends React.Component {
     state = {
@@ -14,7 +14,7 @@ class UserLogin extends React.Component {
 
     componentDidMount() {
       if (localStorage.getItem('access_token')) {
-          window.location.assign('http://localhost:3000/');
+          window.location.assign(REACT_URL + '/');
       }
         if (this.props.login) {
           const { email, password } = this.props.login;
@@ -28,14 +28,14 @@ class UserLogin extends React.Component {
 
       loginUser = e => {
         e.preventDefault();
-        axios.post(API_URL + 'auth/jwt/create/', {
+        axios.post(API_URL + '/auth/jwt/create/', {
           email: this.state.email,
           password: this.state.password,
         }).then(res => {
             console.log(res.data)
             localStorage.setItem('access_token', res.data.access);
             localStorage.setItem('refresh_token', res.data.refresh);
-            window.location.assign('http://localhost:3000/');
+            window.location.assign(REACT_URL + '/');
         });
         // this.setState({ error: true })
       };

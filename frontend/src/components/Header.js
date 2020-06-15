@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from 'react-router-dom'
 import axios from "axios";
-import { API_URL } from "../constants"; 
+import { REACT_URL } from "../constants"; 
 
 
 class Header extends Component {
@@ -9,7 +9,7 @@ class Header extends Component {
     logOut() {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
-        document.location.replace('http://localhost:3000/login');
+        document.location.replace(REACT_URL + '/login');
     }
 
     render() {
@@ -35,7 +35,7 @@ class Header extends Component {
                                 <Link className="nav-link" to="/news">News</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/setting">Setting</Link>
+                                <Link className="nav-link" to="/setting/user/">Setting</Link>
                             </li>
                         </>
                     }

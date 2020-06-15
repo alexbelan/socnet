@@ -48,13 +48,13 @@ class UserData(models.Model):
         ('2', 'Женьшина'),
     )
     id = models.AutoField(primary_key=True, unique=True)
-    avatar = models.ImageField(upload_to='avatar/')
     first_name = models.CharField(max_length=50, unique=False, default='', blank=True, null=True)
     last_name = models.CharField(max_length=50, unique=False, default='', blank=True, null=True)
+    photo_user = models.ImageField(upload_to='img/photo_user/', default="img/photo_user/default.png")
     gender = models.CharField(max_length=1, choices=GENDER, default='', blank=True, null=True)
     about_myself = models.CharField(max_length=255, default='', blank=True, null=True)
     status = models.CharField(max_length=1, choices=STATUS, default='', blank=True, null=True)
-    year_of_birth = models.DateField(default=datetime.date(2000, 4, 15), blank=True, null=True)\
+    year_of_birth = models.DateField(default=datetime.date(2000, 4, 15), blank=True, null=True)
 
 
 class User(AbstractBaseUser, PermissionsMixin):

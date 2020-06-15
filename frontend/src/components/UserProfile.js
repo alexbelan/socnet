@@ -19,7 +19,8 @@ class userProfile extends Component {
             "last_name": '',
             "about_myself": '',
             "gender": '',
-            "status": ''
+            "status": '',
+            "photo": '',
         },
         "friends": {
             "is_friend": null,
@@ -30,7 +31,7 @@ class userProfile extends Component {
 
     JWT = {
         method: 'get',
-        url: API_URL + 'user/',
+        url: API_URL + '/user/',
     }
 
     pagination = {
@@ -69,17 +70,17 @@ class userProfile extends Component {
     }
 
     openChat = () => {
-        axios.post(API_URL + "chat/new/", {
+        axios.post(API_URL + "/chat/new/", {
             "id_user1": this.state.id_user,
             "id_user2": this.state.id,
         }).then(res => {
-            document.location.replace(REACT_URL + 'chat/' + res.data.response);
+            document.location.replace(REACT_URL + '/chat/' + res.data.response);
             console.log(res.data)
         })
     }
 
     getUser () {
-        axios.get(API_URL + 'user/').then(res => {
+        axios.get(API_URL + '/user/').then(res => {
             console.log(this.slug + " " + res.data.id)
             if (this.slug == res.data.id) {
                 document.location.replace(REACT_URL);
@@ -90,13 +91,13 @@ class userProfile extends Component {
     }
 
     getUserPage () {
-        axios.get(API_URL + 'user/' + this.slug + '/').then(res => {
+        axios.get(API_URL + '/user/' + this.slug + '/').then(res => {
             this.setState(res.data)
         })
     }
 
     addFriend = () => {
-        axios.post(API_URL + 'user/friends/request/', {
+        axios.post(API_URL + '/user/friends/request/', {
             "id_user": this.state.id,
         }).then(res => {
             if (res.data) {
@@ -109,7 +110,7 @@ class userProfile extends Component {
     }
 
     deleteFriend = () => {
-        axios.post(API_URL + 'user/friends/delete/', {
+        axios.post(API_URL + '/user/friends/delete/', {
             "id_user": this.state.id,
         }).then(res => {
             if (res.data) {
@@ -122,7 +123,7 @@ class userProfile extends Component {
     }
 
     repost = (id, e) => {
-        axios.post(API_URL + 'groups/post/addrepost/', {
+        axios.post(API_URL + '/groups/post/addrepost/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -135,7 +136,7 @@ class userProfile extends Component {
     }
 
     removeRepost = (id, e) => {
-        axios.post(API_URL + 'groups/post/removerepost/', {
+        axios.post(API_URL + '/groups/post/removerepost/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -148,7 +149,7 @@ class userProfile extends Component {
     }
 
     liked = (id, e) => {
-        axios.post(API_URL + 'groups/post/addlike/', {
+        axios.post(API_URL + '/groups/post/addlike/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -161,7 +162,7 @@ class userProfile extends Component {
     }
 
     deliked = (id, e) => {
-        axios.post(API_URL + 'groups/post/removelike/', {
+        axios.post(API_URL + '/groups/post/removelike/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -188,7 +189,7 @@ class userProfile extends Component {
     scrollPegPosts = () => {
         if (this.state.peg_next) {
             if (Math.round(document.body.getBoundingClientRect().bottom) ===  window.innerHeight) {
-                let query = API_URL + "groups/post/reposts/"+ this.slug +"/?limit=" + this.pagination.limit + "&offset=" + this.pagination.offset;
+                let query = API_URL + "/groups/post/reposts/"+ this.slug +"/?limit=" + this.pagination.limit + "&offset=" + this.pagination.offset;
                 axios.get(query).then(res => {
                     this.pegPosts(res.data.results)
                 })
@@ -201,7 +202,7 @@ class userProfile extends Component {
         this.slug  = this.props.match.params.slug
         this.getUserPage()
         this.getUser()
-        axios.get(API_URL + "groups/post/reposts/" + this.slug + "/").then(res => {
+        axios.get(API_URL + "/groups/post/reposts/" + this.slug + "/").then(res => {
             this.setState({"reposts": res.data.results})
         })
         document.addEventListener("scroll", this.scrollPegPosts)
@@ -216,7 +217,7 @@ class userProfile extends Component {
         ]
 
         for (const key in this.state.reposts) {
-            let url = REACT_URL + "group/" + this.state.reposts[key].group.id + "/"
+            let url = REACT_URL + "/group/" + this.state.reposts[key].group.id + "/"
             Posts.push(
             <>
                 <Card body id={key}>
@@ -247,16 +248,25 @@ class userProfile extends Component {
             <>
                 <div>
                     <h2>Username: {this.state.username}</h2>
-                    <h3>{this.state.user_data.first_name} {this.state.user_data.last_name}</h3>
-                    <ul>
-                        <li>Email: {this.state.email}</li>
-                        <li>gender: {this.gender()}</li>
-                        <li>Family status: {this.status()}</li>
-                        <li>Friends: {this.state.friends.friends}</li>
-                    </ul>
-                    {this.state.user_data.about_myself !== "" &&
-                        AboutMyself
-                    }
+                    <div className="container">
+                        <div className="row">
+                            <div>
+                                <img src={API_URL + this.state.user_data.photo} className="photo-user profile"/>
+                            </div>
+                            <div>
+                                <h3>{this.state.user_data.first_name} {this.state.user_data.last_name}</h3>
+                                <ul>
+                                    <li>Email: {this.state.email}</li>
+                                    <li>gender: {this.gender()}</li>
+                                    <li>Family status: {this.status()}</li>
+                                    <li>Friends: {this.state.friends.friends}</li>
+                                </ul>
+                                {this.state.user_data.about_myself !== "" &&
+                                    AboutMyself
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className="container">
                     <div className="row">

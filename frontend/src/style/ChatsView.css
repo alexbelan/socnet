@@ -1,0 +1,14 @@
+.photo-user {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+}
+
+.block-chat {
+    margin-right: 10px;
+}
+
+.data-chat {
+    display: flex;
+    align-items: center;
+}

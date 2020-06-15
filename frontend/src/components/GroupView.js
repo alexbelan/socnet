@@ -28,7 +28,7 @@ class GroupView extends Component {
     slug = null
 
     liked = (id, e) => {
-        axios.post(API_URL + 'groups/post/addlike/', {
+        axios.post(API_URL + '/groups/post/addlike/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -42,7 +42,7 @@ class GroupView extends Component {
     }
 
     deliked = (id, e) => {
-        axios.post(API_URL + 'groups/post/removelike/', {
+        axios.post(API_URL + '/groups/post/removelike/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -56,7 +56,7 @@ class GroupView extends Component {
     }
 
     repost = (id, e) => {
-        axios.post(API_URL + 'groups/post/addrepost/', {
+        axios.post(API_URL + '/groups/post/addrepost/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -69,7 +69,7 @@ class GroupView extends Component {
     }
 
     removeRepost = (id, e) => {
-        axios.post(API_URL + 'groups/post/removerepost/', {
+        axios.post(API_URL + '/groups/post/removerepost/', {
             'id_post': e.target.name
         }).then(res => {
             if (res.data === true) {
@@ -82,7 +82,7 @@ class GroupView extends Component {
     }
 
     deletePost = (id, e) => {
-        axios.post(API_URL + 'groups/post/remove/', {
+        axios.post(API_URL + '/groups/post/remove/', {
             "id_post": e.target.name
         }).then(res => {
             if(res.data === true) {
@@ -105,7 +105,7 @@ class GroupView extends Component {
     };
 
     submitNewPost = e => {
-        axios.post(API_URL + 'groups/post/new/', {
+        axios.post(API_URL + '/groups/post/new/', {
             "id_group": this.state.group_data.id,
             "text": this.state.new_post.value,
         }).then(res => {
@@ -133,7 +133,7 @@ class GroupView extends Component {
     scrollPegPosts = () => {
         if (this.state.peg_next) {
             if (Math.round(document.body.getBoundingClientRect().bottom) ===  window.innerHeight) {
-                let query = API_URL + "groups/" + this.slug + "/posts/?limit=" + this.pagination.limit + "&offset=" + this.pagination.offset;
+                let query = API_URL + "/groups/" + this.slug + "/posts/?limit=" + this.pagination.limit + "&offset=" + this.pagination.offset;
                 axios.get(query).then(res => {
                     this.pegPosts(res.data.results)
                 })
@@ -142,7 +142,7 @@ class GroupView extends Component {
     }
 
     subscribe = () => {
-        axios.post(API_URL + "groups/subscribe/", {
+        axios.post(API_URL + "/groups/subscribe/", {
             "id_group": this.state.group_data.id,
         }).then(res => {
             if (res.data){
@@ -156,7 +156,7 @@ class GroupView extends Component {
     }
 
     unsubscribe = () => {
-        axios.post(API_URL + "groups/unsubscribe/", {
+        axios.post(API_URL + "/groups/unsubscribe/", {
             "id_group": this.state.group_data.id,
         }).then(res => {
             if (res.data){
@@ -173,13 +173,13 @@ class GroupView extends Component {
         this.slug = this.props.match.params.slug;
         axios.defaults.headers.common['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
         document.addEventListener("scroll", this.scrollPegPosts)
-        axios.get(API_URL + "groups/" + this.slug + "/posts/").then(res => {
+        axios.get(API_URL + "/groups/" + this.slug + "/posts/").then(res => {
             this.setState({
                 "group_posts": res.data.results,
                 "peg_next": (res.data.next) ? true : false,
             })
         })
-        axios.get(API_URL + 'groups/' + this.slug + '/').then(res => {
+        axios.get(API_URL + '/groups/' + this.slug + '/').then(res => {
             this.setState({"group_data": res.data})
         })
     };
@@ -190,7 +190,7 @@ class GroupView extends Component {
         const Posts = []
 
         for (const key in this.state.group_posts) {
-            let url = REACT_URL + "group/" + this.state.group_posts[key].group.id + "/"
+            let url = REACT_URL + "/group/" + this.state.group_posts[key].group.id + "/"
             Posts.push(
             <>
                 <Card body id={key}>
@@ -226,7 +226,7 @@ class GroupView extends Component {
                 <div className="row">
                     <div className="group-block">
                         <h1>{this.state.group_data.name}</h1>
-                        <h4><a href={REACT_URL + "subscribers/" + this.slug }>Подписчики: {this.state.group_data.subscribe}</a></h4>
+                        <h4><a href={REACT_URL + "/subscribers/" + this.slug }>Подписчики: {this.state.group_data.subscribe}</a></h4>
                     </div>
                     <div className="group-block">
                     { !this.state.group_data.is_subscriber && 

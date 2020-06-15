@@ -44,6 +44,7 @@ class ShowChatsSerializers(serializers.ModelSerializer):
             chats_res[chat_id] = {
                 'user_id': chat_data_user.get().id,
                 'username': chat_data_user.get().username,
+                'photo_user': chat_data_user.get().user_data.photo_user.url,
             }
         return chats_res
 
