@@ -11,3 +11,9 @@ export const JWT = {
         Authorization: 'JWT ' + localStorage.getItem('access_token')
     }
 }
+
+export function replaceLogin () {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    document.location.replace(REACT_URL + '/login');
+}

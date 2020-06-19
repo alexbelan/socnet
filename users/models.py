@@ -34,18 +34,18 @@ class MyUserManager(BaseUserManager):
 
 class UserData(models.Model):
     STATUS = (
-        ('0', ''),
-        ('1', 'Не женат'),
-        ('2', 'Встречаюсь'),
-        ('3', 'Женат'),
-        ('4', 'Влюблён'),
-        ('5', 'Всё сложно'),
-        ('6', 'В активном поиске'),
+        ('0', 'No status'),
+        ('1', 'Not married'),
+        ('2', 'Dating'),
+        ('3', 'Married'),
+        ('4', "In love"),
+        ('5', "It's Complicated"),
+        ('6', 'Actively looking'),
     )
     GENDER = (
-        ('0', ''),
-        ('1', 'Мужчина'),
-        ('2', 'Женьшина'),
+        ('0', 'No gender'),
+        ('1', 'Man'),
+        ('2', 'Women'),
     )
     id = models.AutoField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=50, unique=False, default='', blank=True, null=True)

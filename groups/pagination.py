@@ -23,6 +23,7 @@ class GroupPostsPagination(pagination.LimitOffsetPagination):
             new_data.append({
                 "id": data[key]['id'],
                 "text": data[key]['text'],
+                "image": data[key]['image'],
                 "num_likes": len(data[key]['likes']),
                 "num_reposts": len(data[key]['reposts']),
                 "is_like": is_like,

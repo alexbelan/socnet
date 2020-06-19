@@ -3,16 +3,25 @@ import { Form, FormGroup, Input, Label } from "reactstrap";
 
 import axios from "axios";
 
-import { API_URL, REACT_URL } from "../constants";
+import { API_URL, REACT_URL, replaceLogin } from "../constants";
 
 class CreateGroupView extends React.Component {
     state = {
+        'id_user': '',
         "name": "",
     }
 
     onChange = e => {
         this.setState({ [e.target.name]: e.target.value });
     };
+
+    getUser () {
+        axios.get(API_URL + '/user/').then(res => {
+            this.setState({'id_user': res.data.id})
+        }).catch(() => {
+            replaceLogin()
+        })
+    }
 
     createGroup = e => {
         e.preventDefault();

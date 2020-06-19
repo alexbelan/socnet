@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { API_URL, REACT_URL } from "../constants";
-import { Card, Button, CardText, FormGroup, Input, CardTitle } from "reactstrap";
+import { API_URL, REACT_URL, replaceLogin } from "../constants";
+import { Card, Button, CardText } from "reactstrap";
 
 class NewsView extends Component {
 
@@ -103,9 +103,8 @@ class NewsView extends Component {
                 "news": res.data.results,
                 "peg_next": (res.data.next) ? true : false,
             })
-        })
-        axios.get(API_URL + '/groups/' + this.slug + '/').then(res => {
-            this.setState({"group_data": res.data})
+        }).catch(() => {
+            replaceLogin()
         })
     };
 
@@ -122,6 +121,9 @@ class NewsView extends Component {
                     <h5><a href={url}>{this.state.news[key].group.name}</a></h5>
                     <hr/>
                     <CardText>{this.state.news[key].text}</CardText>
+                    { this.state.news[key].image !== null && 
+                        <img className="img-post" src={API_URL + this.state.news[key].image }/>
+                    }
                     <div class="container">
                         <div class="row">
                             { !this.state.news[key].is_like && 
@@ -144,7 +146,7 @@ class NewsView extends Component {
 
         return(
             <>
-                <div className="posts">
+                <div className="posts content">
                     {Posts}
                 </div>
             </>

@@ -2,3 +2,21 @@
     width: 150px;
     height: 150px;
 }
+
+.user-data {
+    margin-top: 10px;
+}
+
+.block-user-data {
+    margin-right: 10px;
+}
+
+.btn-user-group {
+    margin-top: 10px;
+}
+
+.btn-user-group .alert {
+    margin-bottom: 0;
+    width: auto;
+    padding: 6px 10px;
+}

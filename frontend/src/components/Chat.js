@@ -1,7 +1,7 @@
 import '../style/Chat.css'
 import React, { Component } from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-import { API_URL, REACT_URL } from "../constants";
+import { API_URL, REACT_URL, replaceLogin } from "../constants";
 import axios from "axios";
 import { Card, CardTitle, CardText, ButtonToggle, Input } from "reactstrap";
 
@@ -78,6 +78,8 @@ class Chat extends React.Component {
             "photo_user": res.data.user_data.photo_user 
           }
         })
+      }).catch(() => {
+        replaceLogin()
       })
     }
 
@@ -159,7 +161,7 @@ class Chat extends React.Component {
 
       for (const key in this.state.msgs) {
         let url = this.state.msgs[key].user
-        let username = (this.state.msgs[key].user === this.state.user.id) ? this.state.user.username : this.state.your_data_user.username
+        let username = (this.state.msgs[key].user == this.state.user.id) ? this.state.user.username : this.state.your_data_user.username
         Messages.unshift(
         <>
         <Card body>

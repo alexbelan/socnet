@@ -1,3 +1,6 @@
 channels
+corsheaders
 djangorestframework
+djangorestframework-simplejwt
 django
+djoser

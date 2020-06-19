@@ -72,12 +72,11 @@ class UserPhotoSettingSerializer(serializers.ModelSerializer):
 class UserProfileSettingSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
-        fields = ['avatar', 'first_name', 'last_name', 'about_myself', 'gender', 'status', 'year_of_birth']
+        fields = ['first_name', 'last_name', 'about_myself', 'gender', 'status']
 
     def update(self, instance, validated_data):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.first_name)
-        instance.avatar = validated_data.get('avatar', instance.avatar)
         instance.about_myself = validated_data.get('about_myself', instance.about_myself)
         instance.gender = validated_data.get('gender', instance.gender)
         instance.status = validated_data.get('status', instance.status)

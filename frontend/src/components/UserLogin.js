@@ -47,32 +47,35 @@ class UserLogin extends React.Component {
       render(h) {
         return (
           <>
-          <Form onSubmit={this.loginUser}>
-          <FormGroup>
-            <Label for="email">Email:</Label>
-            <Input
-              type="email"
-              name="email"
-              onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.email)}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="password">Password:</Label>
-            <Input
-              type="password"
-              name="password"
-              onChange={this.onChange}
-              value={this.defaultIfEmpty(this.state.password)}
-            />
-          </FormGroup>
-          <Input 
-          type="submit"
-          name="doGo"
-          value="Войти"
-          />
+          <div className="container">
+            <Form onSubmit={this.loginUser}>
+              <FormGroup>
+                <Label for="email">Email:</Label>
+                <Input
+                  type="email"
+                  name="email"
+                  onChange={this.onChange}
+                  value={this.defaultIfEmpty(this.state.email)}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label for="password">Password:</Label>
+                <Input
+                  type="password"
+                  name="password"
+                  onChange={this.onChange}
+                  value={this.defaultIfEmpty(this.state.password)}
+                />
+              </FormGroup>
+              <Input 
+              type="submit"
+              name="doGo"
+              value="Log in"
+              />
 
-        </Form>
+            </Form>
+
+          </div>
           { this.state.error === true  &&
             <div class="alert alert-danger" role="alert">
               Вы не верно ввели Email или пароль

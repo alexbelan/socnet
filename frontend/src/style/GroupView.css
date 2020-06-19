@@ -10,3 +10,20 @@
 .group-block {
     margin: auto 20px;
 }
+
+.img-post {
+    width: 100%;
+    object-fit: cover;
+}
+
+.btn {
+    margin-right: 5px;
+}
+
+.btn.btn-delete {
+    margin-right: 0;
+}
+
+.posts .card {
+    margin-bottom: 10px;
+}

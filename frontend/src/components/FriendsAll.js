@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { API_URL, REACT_URL } from "../constants";
+import { API_URL, REACT_URL, replaceLogin } from "../constants";
 import {Card, Button} from "reactstrap";
 
 class FriendsAll extends Component {
@@ -13,6 +13,8 @@ class FriendsAll extends Component {
     getUser () {
         axios.get(API_URL + '/user/').then(res => {
             this.setState({'id': res.data.id})
+        }).catch(() => {
+            replaceLogin()
         })
     }
 
@@ -75,7 +77,7 @@ class FriendsAll extends Component {
 
         return(
         <>
-        <div className="container">
+        <div className="container posts">
             <div className="row">
                 <div className="content">
                     {Users}

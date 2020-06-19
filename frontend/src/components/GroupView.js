@@ -1,8 +1,8 @@
 import "../style/GroupView.css"
 import React, { Component } from "react";
 import axios from "axios";
-import { API_URL, REACT_URL } from "../constants";
-import { Card, Button, CardText, FormGroup, Input} from "reactstrap";
+import { API_URL, REACT_URL, replaceLogin } from "../constants";
+import { Card, Button, CardText, FormGroup, Input, Label} from "reactstrap";
 
 class GroupView extends Component {
 
@@ -16,6 +16,7 @@ class GroupView extends Component {
         },
         "group_posts": null,
         "new_post": {
+            "image": null,
             "value": "",
         }
     }
@@ -104,6 +105,22 @@ class GroupView extends Component {
         }});
     };
 
+    imageChange(e) {
+        e.preventDefault();
+    
+        let reader = new FileReader();
+        let file = e.target.files[0];
+    
+        reader.onloadend = () => {
+            this.setState({
+                "new_post": {
+                    "image": reader.result,
+                }
+            });
+        }
+        reader.readAsDataURL(file)
+    }
+
     submitNewPost = e => {
         axios.post(API_URL + '/groups/post/new/', {
             "id_group": this.state.group_data.id,
@@ -178,6 +195,8 @@ class GroupView extends Component {
                 "group_posts": res.data.results,
                 "peg_next": (res.data.next) ? true : false,
             })
+        }).catch(() => {
+            replaceLogin()
         })
         axios.get(API_URL + '/groups/' + this.slug + '/').then(res => {
             this.setState({"group_data": res.data})
@@ -197,6 +216,9 @@ class GroupView extends Component {
                     <h5><a href={url}>{this.state.group_posts[key].group.name}</a></h5>
                     <hr/>
                     <CardText>{this.state.group_posts[key].text}</CardText>
+                    { this.state.group_posts[key].image !== null && 
+                        <img className="img-post" src={API_URL + this.state.group_posts[key].image }/>
+                    }
                     <div class="container">
                         <div class="row">
                             { !this.state.group_posts[key].is_like && 
@@ -244,21 +266,32 @@ class GroupView extends Component {
                 { this.state.group_data.is_admin && 
                 <div>
                     <Card body>
-                            <FormGroup>
-                                <Input
-                                type="text" 
-                                name="text" 
-                                placeholder="Текст для поста" 
-                                value={this.defaultIfEmpty(this.state.new_post.text)}
-                                onChange={this.onChangeText}
-                                />
-                            </FormGroup>
+                        { this.state.new_post.image !== null && 
+                            <img className="img-post" src={this.state.new_post.image}/>
+                        }
+                        <FormGroup>
+                            <Label for="img">File</Label>
                             <Input 
-                            type="submit"
-                            name="doGo"
-                            value="Отправить"
-                            onClick={this.submitNewPost}
+                            type="file" 
+                            name="img" 
+                            id="img" 
+                            onChange={(e)=>this.imageChange(e)} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Input
+                            type="text" 
+                            name="text" 
+                            placeholder="Текст для поста" 
+                            value={this.defaultIfEmpty(this.state.new_post.text)}
+                            onChange={this.onChangeText}
                             />
+                        </FormGroup>
+                        <Input 
+                        type="submit"
+                        name="doGo"
+                        value="Отправить"
+                        onClick={this.submitNewPost}
+                        />
                     </Card>
                 </div>
                 }

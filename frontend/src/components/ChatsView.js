@@ -4,7 +4,7 @@ import { ListGroup, Card } from "reactstrap";
 import axios from "axios";
 import "../style/ChatsView.css"
 
-import { API_URL, REACT_URL } from "../constants";
+import { API_URL, REACT_URL, replaceLogin } from "../constants";
 
 
 class ChatView extends React.Component {
@@ -20,6 +20,8 @@ class ChatView extends React.Component {
       }
     }).then(res => {
       this.setState({"chats": res.data.response})
+    }).catch(() => {
+      replaceLogin()
     })
   };
 

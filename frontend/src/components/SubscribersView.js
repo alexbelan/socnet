@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { API_URL, REACT_URL } from "../constants";
+import { API_URL, REACT_URL, replaceLogin } from "../constants";
 import {Card, Button} from "reactstrap";
 
 class SubscribersView extends Component {
@@ -15,6 +15,8 @@ class SubscribersView extends Component {
     getUser () {
         axios.get(API_URL + '/user/').then(res => {
             this.setState({'id': res.data.id})
+        }).catch(() => {
+            replaceLogin()
         })
     }
 

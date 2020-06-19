@@ -2,7 +2,7 @@ import '../style/UserProfile.css'
 import React, { Component } from "react";
 import axios from "axios";
 import { Card,CardText, Button } from "reactstrap";
-import { API_URL, REACT_URL } from "../constants";
+import { API_URL, REACT_URL, replaceLogin } from "../constants";
 
 class Home extends Component {
 
@@ -41,30 +41,30 @@ class Home extends Component {
     gender () {
         switch (this.state.user_data.gender) {
             case '1':
-                return 'Мужчина'
+                return 'Man'
             case '2':
-                return 'Женьшинв'        
+                return 'Women'        
             default:
-                return 'Не указано'
+                return 'No gender'
         }
     }
 
     status () {
         switch (this.state.user_data.status) {
             case '1':
-                return 'Не женат'
+                return 'Not married'
             case '2':
-                return 'Встречаюсь'   
+                return 'Dating'   
             case '3':
-                return 'Женат'
+                return 'Married'
             case '4':
-                return 'Влюблён' 
+                return 'In love' 
             case '5':
-                return 'Всё сложно'
+                return "It's Complicated"
             case '6':
-                return 'В активном поиске'      
+                return 'Actively looking'      
             default:
-                return 'Статуса нет'
+                return 'No status'
         }
     }
 
@@ -141,6 +141,8 @@ class Home extends Component {
                         "peg_next": (res.data.next) ? true : false,
                     })
                 })
+            }).catch(() => {
+                replaceLogin()
             })
         } else {
             document.location.replace(REACT_URL + '/login');
@@ -152,7 +154,7 @@ class Home extends Component {
 
         const Posts = []
         const AboutMyself = [
-            <h5>О себе:</h5>,
+            <h5>About myself:</h5>,
             <p>{this.state.user_data.about_myself}</p>
         ]
 
@@ -164,8 +166,11 @@ class Home extends Component {
                     <h5><a href={url}>{this.state.reposts[key].group.name}</a></h5>
                     <hr/>
                     <CardText>{this.state.reposts[key].text}</CardText>
-                    <div class="container">
-                        <div class="row">
+                    { this.state.reposts[key].image !== null && 
+                        <img className="img-post" src={API_URL + this.state.reposts[key].image }/>
+                    }
+                    <div className="container">
+                        <div className="row">
                             { !this.state.reposts[key].is_like && 
                                 <Button outline onClick={(e) => this.liked(key, e)} color="primary" name={this.state.reposts[key].id}>Like</Button>
                             }
@@ -183,14 +188,14 @@ class Home extends Component {
 
         return (
             <>
-                <div className="container">
+                <div className="container user-data" >
                     <div className="row">
-                        <div>
+                        <div className="block-user-data">
                             <img src={API_URL + this.state.user_data.photo_user} className="photo-user profile"/>
                         </div>
-                        <div>
+                        <div className="block-user-data">
                             <h2>Hello {this.state.username}</h2>
-                            <h4>Name: {this.state.user_data.first_name} {this.state.user_data.last_name}</h4>
+                            <h4>{this.state.user_data.first_name} {this.state.user_data.last_name}</h4>
                             <ul>
                                 <li>Email: {this.state.email}</li>
                                 <li>Gender: {this.gender()}</li>
@@ -201,7 +206,7 @@ class Home extends Component {
                                 AboutMyself
                             }
                         </div>
-                        <div>
+                        <div className="block-user-data">
                             {this.state.friends.request_friends === 0 &&
                                 <Button outline tag="a" href={REACT_URL + "/request/all/"} color="primary">New Friends {this.state.request_freands}</Button>
                             }
@@ -212,7 +217,7 @@ class Home extends Component {
                     </div>
                     
                 </div>
-                <div className="reposts">
+                <div className="reposts posts content">
                     {Posts}
                 </div>
             </>

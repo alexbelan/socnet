@@ -1,16 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { API_URL, REACT_URL } from "../constants";
+import { API_URL, REACT_URL, replaceLogin } from "../constants";
 import {Card, Button} from "reactstrap";
-
-// function ListGroups (props) {
-//     if (props.GroupId) {
-//       return (
-//         <ListGroupItem tag="a" href={REACT_URL + "group/" + props.GroupId} action>{props.GroupName}</ListGroupItem>
-//       );
-//     }
-//     return ("Данных нет")
-// }
 
 class RequestFriendsView extends Component {
 
@@ -49,6 +40,8 @@ class RequestFriendsView extends Component {
             axios.defaults.headers.common['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
             axios.get(API_URL + '/user/friends/requestall/').then(res => {
                 this.setState({"users": res.data})
+            }).catch(() => {
+                replaceLogin()
             })
         } else {
             document.location.replace(REACT_URL + '/login');

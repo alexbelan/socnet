@@ -23,5 +23,7 @@ export function refreshJWT() {
 }
 
 export function replaceLogin () {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     document.location.replace(REACT_URL + '/login');
 }

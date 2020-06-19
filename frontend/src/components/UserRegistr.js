@@ -56,7 +56,7 @@ class UserRegistr extends React.Component {
 
       render(h) {
           return (
-            <Form onSubmit={this.createUser}>
+            <Form className="container" onSubmit={this.createUser}>
             <FormGroup>
               <Label for="email">Email:</Label>
               <Input
@@ -96,6 +96,7 @@ class UserRegistr extends React.Component {
             <Input 
             type="submit"
             name="doGo"
+            value="Registr"
             />
           </Form>
           )

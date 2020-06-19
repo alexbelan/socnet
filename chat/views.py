@@ -54,7 +54,7 @@ class ListMessageView(ListAPIView):
         user = chat.users.all().exclude(id=request.user.id).values('id', 'username'),
         data = {
             'msgs': paginator.get_paginated(serializer.data),
-            'user': user,
+            'user': user[0],
         }
         return Response(data)
 

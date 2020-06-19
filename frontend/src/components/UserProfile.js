@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Card,CardText, Alert } from "reactstrap";
 import axios from "axios";
 
-import { API_URL, REACT_URL } from "../constants";
+import { API_URL, REACT_URL, replaceLogin } from "../constants";
 
 class userProfile extends Component {
 
@@ -42,30 +42,30 @@ class userProfile extends Component {
     gender () {
         switch (this.state.user_data.gender) {
             case '1':
-                return 'Мужчина'
+                return 'Man'
             case '2':
-                return 'Женьшинв'        
+                return 'Women'        
             default:
-                return 'Не указано'
+                return 'No gender'
         }
     }
 
     status () {
         switch (this.state.user_data.status) {
             case '1':
-                return 'Не женат'
+                return 'Not married'
             case '2':
-                return 'Встречаюсь'   
+                return 'Dating'   
             case '3':
-                return 'Женат'
+                return 'Married'
             case '4':
-                return 'Влюблён' 
+                return 'In love' 
             case '5':
-                return 'Всё сложно'
+                return "It's Complicated"
             case '6':
-                return 'В активном поиске'      
+                return 'Actively looking'      
             default:
-                return 'Статуса нет'
+                return 'No status'
         }
     }
 
@@ -87,6 +87,8 @@ class userProfile extends Component {
             } else {
                 this.setState({'id_user': res.data.id})
             }
+        }).catch(() => {
+            replaceLogin()
         })
     }
 
@@ -212,7 +214,7 @@ class userProfile extends Component {
 
         const Posts = []
         const AboutMyself = [
-            <h5>О себе:</h5>,
+            <h5>About myself:</h5>,
             <p>{this.state.user_data.about_myself}</p>
         ]
 
@@ -247,13 +249,13 @@ class userProfile extends Component {
         return (
             <>
                 <div>
-                    <h2>Username: {this.state.username}</h2>
-                    <div className="container">
+                    <div className="container block-user-data">
+                        <h2>Username: {this.state.username}</h2>
                         <div className="row">
-                            <div>
+                            <div className="block-user-data">
                                 <img src={API_URL + this.state.user_data.photo} className="photo-user profile"/>
                             </div>
-                            <div>
+                            <div className="block-user-data">
                                 <h3>{this.state.user_data.first_name} {this.state.user_data.last_name}</h3>
                                 <ul>
                                     <li>Email: {this.state.email}</li>
@@ -268,7 +270,7 @@ class userProfile extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="container">
+                <div className="container btn-user-group">
                     <div className="row">
                         <Button color="primary" onClick={this.openChat}>Send message</Button>
                         {!this.state.friends.is_friend && !this.state.friends.is_request_friend && 
@@ -283,7 +285,7 @@ class userProfile extends Component {
                     </div>
                 </div>
                 <hr/>
-                <div className="reposts">
+                <div className="reposts posts container">
                     {Posts}
                 </div>
             </>

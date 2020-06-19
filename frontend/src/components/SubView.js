@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { API_URL, REACT_URL } from "../constants";
+import { API_URL, REACT_URL, replaceLogin } from "../constants";
 import {ListGroupItem, Button} from "reactstrap";
 
 function ListGroups (props) {
@@ -23,6 +23,8 @@ class SubView extends Component {
             axios.defaults.headers.common['Authorization'] = 'JWT ' + localStorage.getItem('access_token');
             axios.get(API_URL + '/groups/subscriptions/').then(res => {
                 this.setState({"groups": res.data})
+            }).catch(() => {
+                replaceLogin()
             })
         } else {
             document.location.replace('http://localhost:3000/login');
@@ -43,13 +45,13 @@ class SubView extends Component {
 
         return(
         <>
-        <div className="container">
+        <div className="container posts">
             <div className="row">
                 <div className="content">
                     {groups}
                 </div>
                 <div>
-                    <Button teg="a" href={REACT_URL + "create/group/"} color="primary">Create group</Button>
+                    <Button teg="a" href={REACT_URL + "/create/group/"} color="primary">Create group</Button>
                 </div>
             </div>
         </div>
