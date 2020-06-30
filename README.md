@@ -1,2 +1,4 @@
 # socnet
-Социальная сеть на Python Django
+Социальная сеть на Python Django и React.js
+
+
