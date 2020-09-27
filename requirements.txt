@@ -1,6 +1,8 @@
-channels
+channels==2.4.0
 corsheaders
-djangorestframework
-djangorestframework-simplejwt
-django
-djoser
+djangorestframework==3.11.0
+djangorestframework-simplejwt==4.4.0
+django==3.1
+djoser==2.0.3
+psycopg2-binary==2.8.4
+channels-redis==2.4.2
