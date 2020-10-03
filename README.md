@@ -7,7 +7,7 @@ Back-end сделан на Django с использованием rest framework
 
 **Зависимости:**
 
-'''
+```
 channels==2.4.0
 djangorestframework==3.11.0
 djangorestframework-simplejwt==4.4.0
@@ -17,7 +17,7 @@ psycopg2-binary==2.8.4
 channels-redis==2.4.2
 django-cors-headers
 Pillow
-'''
+```
 
 Описание каждой зависимости:
 
@@ -33,16 +33,17 @@ Pillow
 
 Чтобы быстро подключить все зависимости, используете эту команду в терминале:
 
-'''ph
+```ph
 python manage.py -r requirements.txt
-'''
+```
+
 У вас всё должно нормально работать.
 
 **Запуск сервера:**
 
 Теперь нужно запустить сервер, для этого надо подключиться к БД, сделать миграции и создать супер пользователя, для первого нужно сделать файл **config.ini**, примерно так он должен выглядеть:
 
-'''ini
+```ini
 [database]
 ENGINE=django.db.backends.postgresql_psycopg2
 NAME=socnet
@@ -50,25 +51,25 @@ USER=admin
 PASSWORD=1234
 HOST=127.0.0.1
 PORT=5432
-'''
+```
 В качестве СУБД тут используется PostgreSQL. Теперь можно сделать миграции, для этого введите это в терминал:
 
-'''ph
+```ph
 python manage.py migrate
-'''
+```
 Последние, что нужно сделать для запуска сервера, так это создать супер пользователя и запустить сервер.
 
 Делаем супер пользователя:
 
-'''ph
+```ph
 python manage.py createsuperuser
-'''
+```
 
 Запускаем сервер:
 
-'''ph
+```ph
 python manage.py runserver
-'''
+```
 
 На этом запуск сервера закончен.
 
