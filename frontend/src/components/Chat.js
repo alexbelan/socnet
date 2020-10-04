@@ -1,5 +1,5 @@
 import '../style/Chat.css'
-import React, { Component } from 'react';
+import React from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { API_URL, REACT_URL, replaceLogin } from "../constants";
 import axios from "axios";
