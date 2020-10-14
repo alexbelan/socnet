@@ -34,7 +34,7 @@ Pillow
 Чтобы быстро подключить все зависимости, используете эту команду в терминале:
 
 ```ph
-python manage.py -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 У вас всё должно нормально работать.
